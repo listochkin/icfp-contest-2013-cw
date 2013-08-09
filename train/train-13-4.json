@@ -1,0 +1,11 @@
+{
+	"id": "BJFR7ZtEyvudUIyy9Uj2TvlU",
+	"size": 13,
+	"operators": [
+		"if0",
+		"or",
+		"plus",
+		"shl1"
+	],
+	"challenge": "(lambda (x_14783) (plus (if0 (or (shl1 (shl1 (or 1 x_14783))) x_14783) x_14783 x_14783) 1))"
+}

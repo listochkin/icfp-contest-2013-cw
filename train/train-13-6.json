@@ -1,0 +1,12 @@
+{
+	"id": "NX4yNslQdUJl4PDxXf2yc0Yw",
+	"size": 13,
+	"operators": [
+		"and",
+		"if0",
+		"not",
+		"or",
+		"shl1"
+	],
+	"challenge": "(lambda (x_15283) (or (not (if0 (and (and x_15283 (shl1 x_15283)) 1) x_15283 x_15283)) 1))"
+}
