@@ -14,7 +14,7 @@ var problemsFile = path.join(__dirname, '../problems.json');
 
 before(function (done) {
     fs.exists(problemsFile, function (exists) {
-        if (exists) {
+        if (!exists) {
             api.problems(function (body) {
                 problems = _.sortBy(body, function (p) {
                     return p.size;
