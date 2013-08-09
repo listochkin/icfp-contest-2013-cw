@@ -1,0 +1,4 @@
+// copy this file to ./key.js
+'use strict';
+
+module.exports = 'put team api key here';
