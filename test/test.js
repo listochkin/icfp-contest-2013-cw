@@ -30,7 +30,10 @@ var tests_expr_eval = {
 	'(lambda (x_1914) 0)' : { 0: 0, 1: 0},
 	'(lambda (x_1914) 1)' : { 0: 1, 1: 1},
 	// simple tests
-	'(lambda (x_1914) (shl1 (shl1 x_1914)))' : {0: 0, 1 : 4, 3: 12}
+	'(lambda (x_1914) (shl1 (shl1 x_1914)))' : {0: 0, 1 : 4, 3: 12},
+	// fold
+	'(lambda (z) (fold 1 z (lambda (y x) (or (shl1 x) y))))' :
+			{0: 0x0000000000000080, 1: 0x0000000000000180, 0x20: 0x0000000000002080}
 };
 
 

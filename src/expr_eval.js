@@ -1,5 +1,6 @@
 'use strict';
 
+
 /*
 calculate parsed s-expression for given value
 */
@@ -11,13 +12,13 @@ function expr_apply(s_expr, env)
 		switch(s_expr[0])
 		{
 			case 'lambda':
-				// dump apply
-				var env1 = env;
-				env1[s_expr[1][0]] = env['_']
+				// apply 1st variable
+				var _env = {};
+				_env[s_expr[1][0]] = env['_']
 				// eval sub-expression
-				return expr_apply(s_expr[2], env1);
+				return expr_apply(s_expr[2], _env);
 			case 'not':
-				return ~expr_apply(s_expr[2], env1);
+				return ~expr_apply(s_expr[2], env);
 			case 'shl1':
 				return expr_apply(s_expr[1], env) << 1;
 			case 'shr1':
@@ -40,8 +41,19 @@ function expr_apply(s_expr, env)
 				else
 					return expr_apply(s_expr[3], env);
 			case 'fold':
-				// stub
-				return 1;
+				var list = expr_apply(s_expr[1], env);
+				var acc = expr_apply(s_expr[2], env);
+
+				for (var i = 0; i < 8; i++)
+				{
+					var _env = env;
+					_env[s_expr[3][1][0]] = list & 0xff;
+					_env[s_expr[3][1][1]] = acc;
+
+					acc = expr_apply(s_expr[3][2], _env);
+					list = list >> 8;
+				}
+				return acc;
 		}
 	}
 	if (typeof s_expr === 'string')
@@ -55,7 +67,6 @@ function expr_apply(s_expr, env)
 function expr_eval(s_expr, arg)
 {
 	// '_' is name of 1st applied arg
-	// '__' is name of 2nd applied arg
 	var env = {"_": arg};
 	return expr_apply(s_expr, env);
 }
