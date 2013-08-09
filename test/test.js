@@ -13,6 +13,8 @@ var Lparse = require('LISP.js').parse;
 var expr_size = require('../src/expr_size');
 var expr_str = require('../src/expr_str');
 var expr_eval = require('../src/expr_eval');
+var expr_solve = require('../src/expr_solve');
+var train = require('../src/train-reader.js');
 
 // tests for expr_size()
 var tests_expr_size = {
@@ -38,6 +40,14 @@ var tests_expr_eval = {
 			{0: 0, 1: 0, 10: 0, 1000: 0, 101212: 0, 0xFF10: 0x0000000000000002, 0x1000: 0},
 };
 
+// tests for expr_solce()
+var tests_expr_solve = {
+	// VERY simple tests
+	'3' : {
+		'tests' : [0, 1], // 0xFF, 0xFFFFFF, 0xFF10100111, -1],
+		'index' : [1, 2]
+	}
+};
 
 /*
 */
@@ -78,6 +88,19 @@ describe('Here\'s how to write tests in Mocha', function () {
 		})(arg, expecteds[arg]);
 
 	})(item, tests_expr_eval[item]);
+
+
+	for (var idx in tests_expr_solve['3']['index']) (function(JSONTask){
+
+		for (var arg in tests_expr_solve['3']['tests']) (function(arg, expected){
+
+			it('should evaluate `' + JSONTask['challenge'] + '` with arg ' + arg + ' to ' + expected, function(){
+				expect(expr_eval(expr_solve(JSONTask)['s_expr'], arg)).to.eql(expected);
+			});
+		})(tests_expr_solve['3']['tests'], expr_eval(Lparse(JSONTask['challenge']), tests_expr_solve['3']['tests'][arg]));
+
+	})(train(3, tests_expr_solve['3']['index'][idx]));
+
 
     describe('Describe sections can be nested', function () {
 
