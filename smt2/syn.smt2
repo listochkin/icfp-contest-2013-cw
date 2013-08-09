@@ -83,6 +83,7 @@
 )(declare-const op1 Op1Type)
 (declare-const op2 Op2Type)
 (declare-const c1 ConstType)
+(declare-const cv Bool)
 
 (define-fun synth_op1_v ((h Op1Type)(v (_ BitVec 64))) (_ BitVec 64)
     (if (= h NOT)
@@ -108,13 +109,20 @@
 (define-fun hole_c((v ConstType)) (_ BitVec 64)
 	(synth_op1_v op1 (synth_op0_c c1)))
 
+
 (define-fun lambda_hole ((x (_ BitVec 64))) (_ BitVec 64)
-   (hole_c x)
+  (if cv
+    (hole_v x)
+    (hole_c x)
+  )
 )
 
+;(assert (= (lambda_hole #x0000000001345345) #xFFFFFFFFFECBACBA))
 (assert (= (lambda_hole #x0000000001345345) #x0000000000000000))
 ;(assert (= (lambda_hole (_ bv2 64)) #xFFFFFFFFFFFFFFFD))
 ;(assert (= (lambda_hole (_ bv1 64)) #x0000000000000002))
+;(assert (= (lambda_hole #x0000000001345345) #xFFFFFFFFFFFFFFFF))
+;(assert (= (lambda_hole #x0000000001345345) #xFFFFFFFFFFFFFFFE))
 
 (simplify (z_shr16 #x0000000001345345))
 
