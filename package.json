@@ -1,0 +1,30 @@
+{
+  "name": "icfp-contest-2013-cw",
+  "version": "0.0.1",
+  "description": "icfp-contest-2013-cw ====================",
+  "main": "src/index.js",
+  "private": true,
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "mocha test --timeout 60s --reporter nyan",
+    "watch": "mocha --timeout 60s --watch --reporter min"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/listochkin/icfp-contest-2013-cw"
+  },
+  "author": "",
+  "license": "MIT",
+  "readmeFilename": "README.md",
+  "gitHead": "e9936f29b82a33dac9f39903b29530c3a000366b",
+  "bugs": {
+    "url": "https://github.com/listochkin/icfp-contest-2013-cw/issues"
+  },
+  "devDependencies": {
+    "chai": "~1.7.2",
+    "mocha": "~1.12.0"
+  },
+  "dependencies": {
+    "LISP.js": "0.0.6"
+  }
+}
