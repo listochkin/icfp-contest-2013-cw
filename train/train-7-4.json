@@ -1,0 +1,10 @@
+{
+	"id": "is2ynxfW4p2QtStgZcCYaeUG",
+	"size": 7,
+	"operators": [
+		"not",
+		"or",
+		"plus"
+	],
+	"challenge": "(lambda (x_5995) (plus (or 0 (not x_5995)) 0))"
+}

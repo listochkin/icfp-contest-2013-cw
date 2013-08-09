@@ -1,0 +1,12 @@
+{
+	"id": "GFGNGOutGBabYagA5OK75PTk",
+	"size": 11,
+	"operators": [
+		"and",
+		"if0",
+		"not",
+		"plus",
+		"shr4"
+	],
+	"challenge": "(lambda (x_11542) (plus (if0 (shr4 (and 1 (not x_11542))) x_11542 0) x_11542))"
+}

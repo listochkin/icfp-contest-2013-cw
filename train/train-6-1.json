@@ -1,0 +1,10 @@
+{
+	"id": "7lEiyN3M1VPa3h7ti49GJ6RF",
+	"size": 6,
+	"operators": [
+		"plus",
+		"shl1",
+		"shr4"
+	],
+	"challenge": "(lambda (x_4570) (shl1 (plus (shr4 x_4570) 0)))"
+}

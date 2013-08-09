@@ -1,0 +1,11 @@
+{
+	"id": "anyAyLSWCdNAxiVfZ31OdwfD",
+	"size": 8,
+	"operators": [
+		"and",
+		"shr16",
+		"shr4",
+		"xor"
+	],
+	"challenge": "(lambda (x_7039) (and (shr4 (shr16 (xor x_7039 1))) x_7039))"
+}

@@ -1,0 +1,9 @@
+{
+	"id": "XbRYR41chbat8Uw3vwelQ5ZB",
+	"size": 7,
+	"operators": [
+		"or",
+		"shr1"
+	],
+	"challenge": "(lambda (x_6193) (or (shr1 (or x_6193 1)) 1))"
+}

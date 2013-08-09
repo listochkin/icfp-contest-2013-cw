@@ -1,0 +1,11 @@
+{
+	"id": "DpBHpC5GzNUWGGo7FQh9iLZg",
+	"size": 9,
+	"operators": [
+		"and",
+		"if0",
+		"shl1",
+		"shr4"
+	],
+	"challenge": "(lambda (x_8623) (if0 (shl1 (and 1 (shr4 x_8623))) x_8623 0))"
+}

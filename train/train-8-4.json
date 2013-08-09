@@ -1,0 +1,11 @@
+{
+	"id": "1NZ32Tn3AXnaxOcBEdfNLgHK",
+	"size": 8,
+	"operators": [
+		"and",
+		"plus",
+		"shl1",
+		"shr1"
+	],
+	"challenge": "(lambda (x_6986) (plus (shr1 (shl1 (and x_6986 x_6986))) 1))"
+}

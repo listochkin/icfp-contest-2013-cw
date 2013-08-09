@@ -1,0 +1,13 @@
+{
+	"id": "Can6AU9uzIynev8GWNYJf7kB",
+	"size": 12,
+	"operators": [
+		"and",
+		"if0",
+		"not",
+		"plus",
+		"shr1",
+		"shr16"
+	],
+	"challenge": "(lambda (x_12460) (shr16 (plus (if0 (shr1 (and (not x_12460) 1)) x_12460 x_12460) x_12460)))"
+}

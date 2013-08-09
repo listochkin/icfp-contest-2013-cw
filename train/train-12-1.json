@@ -1,0 +1,12 @@
+{
+	"id": "AoA2L6u9ypN5ygvvbYOWSAZw",
+	"size": 12,
+	"operators": [
+		"if0",
+		"not",
+		"plus",
+		"shr1",
+		"xor"
+	],
+	"challenge": "(lambda (x_12647) (xor (if0 (plus (not (not x_12647)) (shr1 x_12647)) 0 1) x_12647))"
+}

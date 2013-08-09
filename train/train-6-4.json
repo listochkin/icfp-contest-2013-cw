@@ -1,0 +1,9 @@
+{
+	"id": "z6O0W6JYoqjB8NdB7YEghuEF",
+	"size": 6,
+	"operators": [
+		"or",
+		"plus"
+	],
+	"challenge": "(lambda (x_4903) (plus (or 0 x_4903) x_4903))"
+}

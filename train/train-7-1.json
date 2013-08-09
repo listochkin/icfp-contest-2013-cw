@@ -1,0 +1,10 @@
+{
+	"id": "yviy9kdQJMcME04IrsxsanuK",
+	"size": 7,
+	"operators": [
+		"not",
+		"or",
+		"xor"
+	],
+	"challenge": "(lambda (x_6093) (or (not (xor 0 x_6093)) 1))"
+}

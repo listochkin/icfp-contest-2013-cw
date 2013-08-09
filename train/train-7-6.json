@@ -1,0 +1,9 @@
+{
+	"id": "p3Yjn1YOz5V166Aj44RWoB7m",
+	"size": 7,
+	"operators": [
+		"not",
+		"plus"
+	],
+	"challenge": "(lambda (x_6359) (plus (not x_6359) (plus 0 1)))"
+}

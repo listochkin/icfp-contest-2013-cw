@@ -1,0 +1,11 @@
+{
+	"id": "km7WtQsW9YX2WCjPoeMWv7fr",
+	"size": 8,
+	"operators": [
+		"and",
+		"not",
+		"shl1",
+		"shr4"
+	],
+	"challenge": "(lambda (x_6681) (and (not (not (shl1 (shr4 x_6681)))) x_6681))"
+}

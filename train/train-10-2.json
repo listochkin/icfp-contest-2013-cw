@@ -1,0 +1,11 @@
+{
+	"id": "RlMH7QM19r0WYHjDPTNdwleT",
+	"size": 10,
+	"operators": [
+		"and",
+		"if0",
+		"or",
+		"shr16"
+	],
+	"challenge": "(lambda (x_9534) (if0 (and (or (shr16 x_9534) 0) 1) 0 x_9534))"
+}

@@ -1,0 +1,11 @@
+{
+	"id": "7RpmB9xBq1IiGrAaZVKIkLA6",
+	"size": 8,
+	"operators": [
+		"not",
+		"or",
+		"plus",
+		"shl1"
+	],
+	"challenge": "(lambda (x_7232) (or (plus (shl1 x_7232) (not x_7232)) x_7232))"
+}

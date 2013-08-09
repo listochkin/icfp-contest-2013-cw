@@ -1,0 +1,10 @@
+{
+	"id": "zHkJuRwym5LEugWQCxB7Deqm",
+	"size": 9,
+	"operators": [
+		"if0",
+		"or",
+		"xor"
+	],
+	"challenge": "(lambda (x_8473) (if0 (xor x_8473 (or x_8473 1)) x_8473 1))"
+}

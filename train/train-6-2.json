@@ -1,0 +1,9 @@
+{
+	"id": "8GkpH8bwBXDycY6WbfcdUI63",
+	"size": 6,
+	"operators": [
+		"if0",
+		"shr1"
+	],
+	"challenge": "(lambda (x_5351) (shr1 (if0 x_5351 0 x_5351)))"
+}
