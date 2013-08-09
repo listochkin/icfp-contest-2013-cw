@@ -1,7 +1,7 @@
 'use strict';
 
 /*
-calculate parsed s-expression size
+get string representation of parsed s-expression
 */
 function expr_str(s_expr)
 {
