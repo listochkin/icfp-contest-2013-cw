@@ -26,6 +26,9 @@
   },
   "dependencies": {
     "LISP.js": "0.0.6",
+    "request": "~2.26.0",
+    "concat-stream": "~1.0.0",
+    "underscore": "~1.5.1",
     "jsbn": "0.0.0"
   }
 }
