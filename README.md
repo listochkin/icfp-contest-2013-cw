@@ -11,4 +11,4 @@ To run tests type `npm test`. To always re-run tests on file change type `npm ru
 
 To add a dependency to a project type `npm install -S depName`.
 
-To add a dev dependeency `npm install -S depName`.
+To add a dev dependeency `npm install -SD depName`.
