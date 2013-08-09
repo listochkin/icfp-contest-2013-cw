@@ -16,6 +16,29 @@ var small_expr = '(lambda (x) (plus (shl1 x) 1))';
 
 console.log(expr_eval(Lparse(small_expr), 0));
 console.log(expr_eval(Lparse(small_expr), 1));
+
+
+var _ = require('underscore'), fs = require('fs'), path = require('path');
+    
+var problems = null;
+var problemsFile = path.join(__dirname, '../problems.json');
+var api = require('../src/api.js');
+/*
+fs.readFile(problemsFile, function (err, data) {
+                if (err) throw err;
+                problems = JSON.parse(data);
+                problems_read();
+            });
+*/
+problems_read();
+
+function problems_read() {
+    api.train(3, [], function (problem) {
+            console.log(problem);
+            //expect(problem.size).to.equal(3);            
+        });        
+}
+
 console.log(expr_eval(Lparse(small_expr), 3));
 
 var small_fold2 = '(lambda (x_77888) (fold 1 x_77888 (lambda (x_77889 x_77890) (or (shl1 x_77890) x_77889))))';
