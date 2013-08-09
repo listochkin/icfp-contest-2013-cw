@@ -1,0 +1,8 @@
+{
+	"id": "tDt6sYxJqi5VIHA1GLVUwJlp",
+	"size": 4,
+	"operators": [
+		"plus"
+	],
+	"challenge": "(lambda (x_2819) (plus x_2819 1))"
+}

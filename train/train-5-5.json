@@ -1,0 +1,9 @@
+{
+	"id": "A2z8JAknZJzRiPCKY4R1q5nP",
+	"size": 5,
+	"operators": [
+		"shr16",
+		"xor"
+	],
+	"challenge": "(lambda (x_3706) (xor 1 (shr16 x_3706)))"
+}

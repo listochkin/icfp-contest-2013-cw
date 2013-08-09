@@ -1,0 +1,8 @@
+{
+	"id": "CRoo8W0D4nK0BjwXtTJWMKCV",
+	"size": 4,
+	"operators": [
+		"or"
+	],
+	"challenge": "(lambda (x_2480) (or x_2480 1))"
+}

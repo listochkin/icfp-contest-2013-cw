@@ -1,0 +1,8 @@
+{
+	"id": "FqdnOIAzart33AjylFutWNB9",
+	"size": 3,
+	"operators": [
+		"not"
+	],
+	"challenge": "(lambda (x_31) (not x_31))"
+}

@@ -1,0 +1,9 @@
+{
+	"id": "rtNwDWroOcYfCe6AvP0lNbFI",
+	"size": 5,
+	"operators": [
+		"not",
+		"xor"
+	],
+	"challenge": "(lambda (x_4054) (xor (not 1) x_4054))"
+}

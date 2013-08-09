@@ -1,0 +1,9 @@
+{
+	"id": "gfMDxABtRohIBzI3UTmN3PFL",
+	"size": 4,
+	"operators": [
+		"not",
+		"shr1"
+	],
+	"challenge": "(lambda (x_1985) (shr1 (not x_1985)))"
+}

@@ -1,0 +1,8 @@
+{
+	"id": "uTtbKKZyhgrCkFyZaSStfsVl",
+	"size": 4,
+	"operators": [
+		"xor"
+	],
+	"challenge": "(lambda (x_1824) (xor x_1824 1))"
+}

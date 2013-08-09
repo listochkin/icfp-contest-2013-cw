@@ -1,0 +1,9 @@
+{
+	"id": "4cjgQsA5rvgcRtGwXXLnHLwJ",
+	"size": 5,
+	"operators": [
+		"and",
+		"shr1"
+	],
+	"challenge": "(lambda (x_3174) (shr1 (and x_3174 x_3174)))"
+}
