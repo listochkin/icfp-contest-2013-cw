@@ -45,4 +45,10 @@ describe('ICFP cloudapp.net endpoint', function () {
     //         done();
     //     });
     // });
+
+    it('should read train files', function () {
+        var train = require('../src/train-reader.js');
+        var trainProblem = train(10, 5);
+        expect(trainProblem.size).to.equal(10);
+    })
 });

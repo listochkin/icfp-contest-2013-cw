@@ -9,8 +9,6 @@ function url(action) {
     return 'http://icfpc2013.cloudapp.net/' + action + '?auth=' + KEY + 'vpsH1H';
 }
 
-
-
 module.exports = {
     problems: function problems(callback) {
         request(url('myproblems')).pipe(concat(function (body) {
