@@ -26,5 +26,28 @@ module.exports = {
             body = JSON.parse(body.toString());
             callback(body);
         }));
+    },
+
+    evaluate: function (id, program, args, callback) {
+        request({
+            url: url('guess'),
+            method: 'POST',
+            json: { id: id, program: program, "arguments": args }
+        }).pipe(concat(function (body) {
+                body = JSON.parse(body.toString());
+                callback(body);
+            }));
+    },
+
+    guess: function (id, program, callback) {
+        request({
+            url: url('guess'),
+            method: 'POST',
+            json: { id: id, program: program }
+        }).pipe(concat(function (body) {
+            console.log(body.toString());
+            body = JSON.parse(body.toString());
+            callback(body);
+        }));
     }
 };
