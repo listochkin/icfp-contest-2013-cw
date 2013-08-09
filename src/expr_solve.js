@@ -27,20 +27,21 @@ function solution_passed(s_expr, args, res)
 
 function dumb4_solver(sol)
 {
-	var ops1 = ['not', 'shl1', 'shr1', 'shr4', 'shr16'];
 	var ops2 = ['and', 'or', 'xor', 'plus', 'shr16'];
 
 	var op = sol['task']['operators'][0];
 
 	// small train set
-
 	var test_s_expr = Lparse(sol['task']['challenge']);
 	var test_args = [0, 1, 2, 3];
 	var test_res = test_args.map(function(arg){return expr_eval(test_s_expr, arg);});
 	//
-	var s_expr = [];
-	var variants = [0, 1, 'x'];
 
+	var s_expr = [];
+	// more probabilistic order
+	var variants = ['x', 1, 0];
+
+	// binary operator
 	if (ops2.indexOf(op) > -1)
 	{
 		for (var v1 in variants)
@@ -55,15 +56,22 @@ function dumb4_solver(sol)
 				}
 			}
 		}
-	}else if(ops1.indexOf(op) > -1)
+	}else // unary operators
 	{
-		for (var v1 in variants)
+		var ops = (sol['task']['operators'].length)
+
+		for (var op in ops)
 		{
-			s_expr = ['lambda', ['x'], [op, [op, variants[v1]]]];
-			if (solution_passed(s_expr, test_args, test_res))
+			var op1 = ops[op];
+			var op2 = ops[ops.length - op - 1];
+			for (var v1 in variants)
 			{
-				sol['s_expr'] = s_expr;
-				return sol;
+				s_expr = ['lambda', ['x'], [op1, [op2, variants[v1]]]];
+				if (solution_passed(s_expr, test_args, test_res))
+				{
+					sol['s_expr'] = s_expr;
+					return sol;
+				}
 			}
 		}
 	}
@@ -79,7 +87,7 @@ function expr_solve(JSONTask)
 	{
 		return dumb3_solver(solution);
 	}
-	if ((JSONTask["size"] == 4) && (JSONTask['operators'].length == 1))
+	if (JSONTask["size"] == 4)
 	{
 		console.log(JSONTask['operators'].length == 1);
 		return dumb4_solver(solution);

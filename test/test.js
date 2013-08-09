@@ -49,7 +49,7 @@ var tests_expr_solve = {
 	},
 	'4' : {
 		'tests' : [0, 1,  0xFF, 0xFFFFFF, 0xFF10100111, 0xFFFFFFFFFFFFFFFE, 0xFFFFFFFFFFFFFFFF],
-		'index' : [1, 2, 3]
+		'index' : [3, 5, 6]
 	},
 };
 
