@@ -44,7 +44,7 @@ var tests_expr_eval = {
 var tests_expr_solve = {
 	// VERY simple tests
 	'3' : {
-		'tests' : [0, 1], // 0xFF, 0xFFFFFF, 0xFF10100111, -1],
+		'tests' : [0, 1,  0xFF, 0xFFFFFF, 0xFF10100111, -1],
 		'index' : [1, 2]
 	}
 };
@@ -97,7 +97,7 @@ describe('Here\'s how to write tests in Mocha', function () {
 			it('should evaluate `' + JSONTask['challenge'] + '` with arg ' + arg + ' to ' + expected, function(){
 				expect(expr_eval(expr_solve(JSONTask)['s_expr'], arg)).to.eql(expected);
 			});
-		})(tests_expr_solve['3']['tests'], expr_eval(Lparse(JSONTask['challenge']), tests_expr_solve['3']['tests'][arg]));
+		})(tests_expr_solve['3']['tests'][arg], expr_eval(Lparse(JSONTask['challenge']), tests_expr_solve['3']['tests'][arg]));
 
 	})(train(3, tests_expr_solve['3']['index'][idx]));
 

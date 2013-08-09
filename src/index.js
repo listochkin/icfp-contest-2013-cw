@@ -5,6 +5,8 @@ var Lparse = require('LISP.js').parse;
 var expr_size = require('./expr_size')
 var expr_str = require('./expr_str')
 var expr_eval = require('./expr_eval')
+var train = require('./train-reader');
+var expr_solve = require('./expr_solve');
 
 var expr = "(lambda (x_78631) (fold (shr1 (xor (shl1 (or (or (if0 (and x_78631 (shl1 (shl1 (and (shr16 (and (shr4 x_78631) x_78631)) x_78631)))) 0 x_78631) x_78631) 0)) 0)) 1 (lambda (x_78632 x_78633) (xor (shr4 x_78632) x_78633))))";
 console.log(expr_size(Lparse(expr)) == 30);
@@ -21,4 +23,7 @@ console.log(expr_eval(Lparse(small_fold2), 0)  == 0x0000000000000080);
 console.log(expr_eval(Lparse(small_fold2), 1)  == 0x0000000000000180);
 console.log(expr_eval(Lparse(small_fold2), 0x20) == 0x0000000000002080);
 
-
+var tranJSON = train(3,1);
+console.log(tranJSON);
+var sol = expr_solve(tranJSON);
+console.log(expr_str(sol['s_expr']));
