@@ -5,68 +5,30 @@
 (declare-datatypes () ((ConstType C0 C1)))
 
 ; op1's for variable
-(define-fun z_not_v
+(define-fun z_not
     ((x (_ BitVec 64))) (_ BitVec 64)
     (bvsub (bvneg x) (_ bv1 64))
 )
 
-(define-fun z_shl1_v
+(define-fun z_shl1
     ((x (_ BitVec 64))) (_ BitVec 64)
     (bvshl x (_ bv1 64))
 )
 
-(define-fun z_shr1_v
+(define-fun z_shr1
     ((x (_ BitVec 64))) (_ BitVec 64)
     (bvlshr x (_ bv1 64))
 )
 
-(define-fun z_shr4_v
+(define-fun z_shr4
     ((x (_ BitVec 64))) (_ BitVec 64)
     (bvlshr x (_ bv4 64))
 )
 
-(define-fun z_shr16_v
+(define-fun z_shr16
     ((x (_ BitVec 64))) (_ BitVec 64)
     (bvlshr x (_ bv16 64))
 )
-
-
-; op1's for const
-(define-fun z_not_c
-  ((x ConstType)) (_ BitVec 64)
-    (if (= x C0)
-	(bvsub (bvneg (_ bv0 64)) (_ bv1 64))
-	(bvsub (bvneg (_ bv1 64)) (_ bv1 64)))
-)
-
-(define-fun z_shl1_c
-  ((x ConstType)) (_ BitVec 64)
-    (if (= x C0)
-	(bvshl (_ bv0 64) (_ bv1 64))
-	(bvshl (_ bv1 64) (_ bv1 64)))
-)
-
-(define-fun z_shr1_c
-    ((x ConstType)) (_ BitVec 64)
-    (if (= x C0)
-	(bvlshr (_ bv0 64) (_ bv1 64))
-	(bvlshr (_ bv1 64) (_ bv1 64)))
-)
-
-(define-fun z_shr4_c
-    ((x ConstType)) (_ BitVec 64)
-    (if (= x C0)
-	(bvlshr (_ bv0 64) (_ bv4 64))
-        (bvlshr (_ bv0 64) (_ bv4 64)))
-)
-
-(define-fun z_shr16_c
-    ((x ConstType)) (_ BitVec 64)
-    (if (= x C0)
-	(bvlshr (_ bv0 64) (_ bv16 64))
-	(bvlshr (_ bv0 64) (_ bv16 64)))
-)
-
 
 ; op2's for variables
 (define-fun z_and
@@ -124,32 +86,27 @@
 
 (define-fun synth_op1_v ((h Op1Type)(v (_ BitVec 64))) (_ BitVec 64)
     (if (= h NOT)
-        (z_not_v v)
+        (z_not v)
         (if (= h SHL1)
-        	(z_shl1_v v)
+        	(z_shl1 v)
         	(if (= h SHR1)
-        		(z_shr1_v v)
+        		(z_shr1 v)
         		(if (= h SHR4)
-	        		(z_shr4_v v)
-	        		(z_shr16_v v))))))
+	        		(z_shr4 v)
+	        		(z_shr16 v))))))
 
-(define-fun synth_op1_c ((h Op1Type)(v ConstType)) (_ BitVec 64)
-    (if (= h NOT)
-        (z_not_c v)
-        (if (= h SHL1)
-        	(z_shl1_c v)
-        	(if (= h SHR1)
-        		(z_shr1_c v)
-        		(if (= h SHR4)
-	        		(z_shr4_c v)
-	        		(z_shr16_c v))))))
-
+(define-fun synth_op0_c ((x ConstType)) (_ BitVec 64)
+    (if (= x C0)
+		(_ bv0 64)
+		(_ bv1 64)
+	)
+)
 
 (define-fun hole_v((v (_ BitVec 64))) (_ BitVec 64)
 	(synth_op1_v op1 v))
 
 (define-fun hole_c((v ConstType)) (_ BitVec 64)
-	(synth_op1_c op1 c1))
+	(synth_op1_v op1 (synth_op0_c c1)))
 
 (define-fun lambda_hole ((x (_ BitVec 64))) (_ BitVec 64)
    (hole_c x)
@@ -159,7 +116,7 @@
 ;(assert (= (lambda_hole (_ bv2 64)) #xFFFFFFFFFFFFFFFD))
 ;(assert (= (lambda_hole (_ bv1 64)) #x0000000000000002))
 
-(simplify (z_shr16_v #x0000000001345345))
+(simplify (z_shr16 #x0000000001345345))
 
 (check-sat)
 (get-model)
