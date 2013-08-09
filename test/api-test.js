@@ -39,10 +39,10 @@ describe('ICFP cloudapp.net endpoint', function () {
         expect(problems[problems.length - 1].size).to.equal(30);
     });
 
-    it('should call train', function (done) {
-        api.train(3, [], function (problem) {
-            expect(problem.size).to.equal(3);
-            done();
-        });
-    });
+    // it('should call train', function (done) {
+    //     api.train(3, [], function (problem) {
+    //         expect(problem.size).to.equal(3);
+    //         done();
+    //     });
+    // });
 });
