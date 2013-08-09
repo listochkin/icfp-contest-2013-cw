@@ -16,11 +16,13 @@ function expr_size(s_expr)
 			case 'shr1':
 			case 'shr4':
 			case 'shr16':
+            case 'op1':
 				return 1 + expr_size(s_expr[1]);
 			case 'and':
 			case 'or':
 			case 'xor':
 			case 'plus':
+            case 'op2':
 				return 1 + expr_size(s_expr[1]) + expr_size(s_expr[2]);
 			case 'if0':
 				return 1 + expr_size(s_expr[1]) + expr_size(s_expr[2]) + expr_size(s_expr[3]);
