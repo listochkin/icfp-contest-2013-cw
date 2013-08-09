@@ -27,3 +27,7 @@ var tranJSON = train(3,1);
 console.log(tranJSON);
 var sol = expr_solve(tranJSON);
 console.log(expr_str(sol['s_expr']));
+
+var tranJSON4 = train(4,1);
+var sol4 = expr_solve(tranJSON4);
+console.log(expr_str(sol4['s_expr']));

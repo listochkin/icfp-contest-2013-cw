@@ -44,9 +44,13 @@ var tests_expr_eval = {
 var tests_expr_solve = {
 	// VERY simple tests
 	'3' : {
-		'tests' : [0, 1,  0xFF, 0xFFFFFF, 0xFF10100111, -1],
-		'index' : [1, 2]
-	}
+		'tests' : [0, 1,  0xFF, 0xFFFFFF, 0xFF10100111, 0xFFFFFFFFFFFFFFFE, 0xFFFFFFFFFFFFFFFF],
+		'index' : [1, 2, 3]
+	},
+	'4' : {
+		'tests' : [0, 1,  0xFF, 0xFFFFFF, 0xFF10100111, 0xFFFFFFFFFFFFFFFE, 0xFFFFFFFFFFFFFFFF],
+		'index' : [1, 2, 3]
+	},
 };
 
 /*
@@ -101,6 +105,16 @@ describe('Here\'s how to write tests in Mocha', function () {
 
 	})(train(3, tests_expr_solve['3']['index'][idx]));
 
+	for (var idx in tests_expr_solve['4']['index']) (function(JSONTask){
+
+		for (var arg in tests_expr_solve['4']['tests']) (function(arg, expected){
+
+			it('should evaluate `' + JSONTask['challenge'] + '` with arg ' + arg + ' to ' + expected, function(){
+				expect(expr_eval(expr_solve(JSONTask)['s_expr'], arg)).to.eql(expected);
+			});
+		})(tests_expr_solve['4']['tests'][arg], expr_eval(Lparse(JSONTask['challenge']), tests_expr_solve['4']['tests'][arg]));
+
+	})(train(3, tests_expr_solve['4']['index'][idx]));
 
     describe('Describe sections can be nested', function () {
 
