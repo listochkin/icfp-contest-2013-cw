@@ -90,7 +90,13 @@
 (define-fun z_plus
   ((x (_ BitVec 64)) (y (_ BitVec 64))) (_ BitVec 64)
    (bvadd x y)
-)(define-fun z_fold_op ((a (_ BitVec 64)) (b (_ BitVec 64))) (_ BitVec 64)
+)
+
+(define-fun z_fold_i ((x (_ BitVec 64)) (i (_ BitVec 64))) (_ BitVec 64)
+  (bvand (bvlshr x i) (_ bv255 64))
+)
+
+(define-fun z_fold_op ((a (_ BitVec 64)) (b (_ BitVec 64))) (_ BitVec 64)
 
 ;IMPLEMENT
 (_ bv0 64)
@@ -128,7 +134,7 @@
 	        		(z_shr16_v v))))))
 
 (define-fun synth_op1_c ((h Op1Type)(v ConstType)) (_ BitVec 64)
-    (if (= h NOT) 
+    (if (= h NOT)
         (z_not_c v)
         (if (= h SHL1)
         	(z_shl1_c v)
@@ -141,7 +147,7 @@
 
 (define-fun hole_v((v (_ BitVec 64))) (_ BitVec 64)
 	(synth_op1_v op1 v))
-	
+
 (define-fun hole_c((v ConstType)) (_ BitVec 64)
 	(synth_op1_c op1 c1))
 
