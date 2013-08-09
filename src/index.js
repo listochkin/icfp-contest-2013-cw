@@ -54,3 +54,6 @@ console.log(expr_str(sol['s_expr']));
 var tranJSON4 = train(4,1);
 var sol4 = expr_solve(tranJSON4);
 console.log(expr_str(sol4['s_expr']));
+
+var pattern = require('./patterns')
+console.log(pattern(11,[2,3,4],0));
