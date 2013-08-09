@@ -3,3 +3,4 @@ node_modules
 src/key.js
 problems.json
 .idea/
+test/npm-debug.log
