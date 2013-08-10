@@ -60,7 +60,7 @@ var API = {
         if (program)
             msg.json.program = program;
         else
-            msg.json.arguments = args;
+            msg.json['arguments'] = args;
             
         //console.log(msg);
             

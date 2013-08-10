@@ -8,13 +8,22 @@ var templateUtil = require('../src/template-util.js');
 
 var task;
 
-task = {
-    id: 'hkrI7Vc4Wm0I4E6wzAF4e00W',
-    size: 8,
-    operators: ['plus', 'shl1', 'shr1', 'shr16'],
-    program: '(lambda (x_6936) (plus (shl1 (shr1 (shr16 (shr1 x_6936)))) x_6936))'
-};
+//api.train(9, [], function (problem) {
+//        console.log(problem);
+//});
 
+task = { id: 'oxpgBQGTe4481PNayloSTmWJ',
+    size: 9,
+    operators: [ 'and', 'if0', 'shr4' ],
+    challenge: '(lambda (x_8450) (if0 (and (shr4 (shr4 x_8450)) 1) x_8450 0))' };
+
+//task = {
+//    id: 'hkrI7Vc4Wm0I4E6wzAF4e00W',
+//    size: 8,
+//    operators: ['plus', 'shl1', 'shr1', 'shr16'],
+//    program: '(lambda (x_6936) (plus (shl1 (shr1 (shr16 (shr1 x_6936)))) x_6936))'
+//};
+//
 var solver = new Solver(task);
 solver.start();
 //solver.stop();

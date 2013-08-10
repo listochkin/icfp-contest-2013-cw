@@ -22,7 +22,11 @@ function toProgram(template, variables) {
             template === 'op2' ||
             template === 'c' ) {
 
-            var v = variables[index];
+            var v = variables[index] ||
+                (template === 'op1' && 'not') ||
+                (template === 'op2' && 'and') ||
+                (template === 'c' && '0');
+
             index += 1;
             return v;
         }

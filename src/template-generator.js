@@ -293,7 +293,7 @@ function next_program(len, current, operators) {
     if (!expression)
         return null;
 
-    return ['lambda', 'x', expression];
+    return ['lambda', '(x)', expression];
 }
 
 

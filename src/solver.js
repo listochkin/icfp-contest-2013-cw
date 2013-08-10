@@ -33,7 +33,7 @@ Solver.prototype.addConstraint = function (constraints) {
 Solver.prototype.evaluate = function (inputs, callback) {
     api.evaluate(this.task.id, '', inputs, function(response) {
         var i;
-        console.log('Eval: ' + response.status + ' Outpus: ' + response.outputs);
+        console.log('EVAL: ' + response.status + ', Outpus: ' + response.outputs);
 
         pendingConstraints = [];
         for (i = 0; i < response.outputs.length; i += 1) {
@@ -68,11 +68,6 @@ Solver.prototype.guess = function (callback) {
     }.bind(this));
 }
 
-//Solver.prototype.getZ3Problem = function() {
-//    var problem = translator.translate_template(this.template, this.task.operators);
-//    //problem += translator.translate_constraint16(this.constraints);
-//    return problem;
-//}
 
 Solver.prototype.callZ3 = function(callback) {
     console.log(this.z3program);
@@ -85,7 +80,7 @@ Solver.prototype.callZ3 = function(callback) {
                 console.log(this.programHoles);
 
                 this.program = templateUtil.toProgram(this.template, this.programHoles)
-                console.log(this.program);
+                console.log(expr_str(this.program));
                 this.z3program = '';
                 callback(null);
             }.bind(this));
@@ -105,7 +100,7 @@ Solver.prototype.callZ3 = function(callback) {
 }
 
 Solver.prototype.nextTemplate = function(check_sat) {
-    this.template = generator.next_program(this.task.size, this.template);
+    this.template = generator.next_program(this.task.size, this.template, this.task.operators);
     if (!this.template) {
         this.z3sat = true;
         this.z3program = '';
@@ -172,5 +167,5 @@ Solver.prototype.start = function() {
 }
 
 Solver.prototype.stop = function() {
-    this.z3.kill();
+    //this.z3.kill();
 }
