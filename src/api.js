@@ -29,11 +29,19 @@ module.exports = {
     },
 
     evaluate: function (id, program, args, callback) {
-        request({
-            url: url('guess'),
+        var msg = {
+            url: url('eval'),
             method: 'POST',
-            json: { id: id, program: program, "arguments": args }
-        }).pipe(concat(function (body) {
+            json: { id: id }
+        };
+        if (program)
+            msg.json.program = program;
+        else
+            msg.json.arguments = args;
+            
+        //console.log(msg);
+            
+        request(msg).pipe(concat(function (body) {
                 body = JSON.parse(body.toString());
                 callback(body);
             }));

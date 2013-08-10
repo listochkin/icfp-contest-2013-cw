@@ -25,36 +25,42 @@ function Solver(task) {
 
 var operators = [ 'and', 'if0', 'or', 'shl1', 'shr1', 'shr16', 'shr4', 'xor' ];
 
-api.train(3, [], function (problem) {
-        console.log(problem/*.challenge*/);
+api.train(3, [], function (train) {
+        console.log(train/*.challenge*/);
         
         var expr;
         //for (var i = 0; i < 300; i++)
-            expr = generator.next_program(problem.size, expr);
+            expr = generator.next_program(train.size, expr);
         console.log(expr_str(expr));
         
+        var constraint = "0xFE5645A7867867B3";
+        api.evaluate(train.id, '', [constraint], function (evaluate) {
+            
+            console.log(evaluate);
         
-        
-        var problem = translator.translate_template(expr, operators);
-        problem += translator.translate_constraint(0, 0);
-        var z3 = new Z3();
-        
-        z3.write(problem, function (response) {
-            console.log(response);
-            if(response.indexOf('sat') != -1)
-                z3.write('(get-model)', function (response) {
-                    console.log(response);
-                    
-                    var variables = templateUtil.extractVariables(response);
-                    console.log(variables);
-                    console.log(expr_str(templateUtil.toProgram(expr, variables)));
-                    //expect(response.substr(0, 6)).to.equal('(model')
-                    
-                    //done();
-                }); 
-            z3.kill();
-        });
-
+            var problem = translator.translate_template(expr, train.operators);
+            problem += translator.translate_constraint(constraint, evaluate.outputs[0]);
+            
+            console.log(problem);
+            
+            var z3 = new Z3();
+            
+            z3.write(problem, function (response) {
+                console.log(response);
+                if(response.indexOf('sat') != -1)
+                    z3.write('(get-model)', function (response) {
+                        console.log(response);
+                        
+                        var variables = templateUtil.extractVariables(response);
+                        console.log(variables);
+                        console.log(expr_str(templateUtil.toProgram(expr, variables)));
+                        //expect(response.substr(0, 6)).to.equal('(model')
+                        
+                        //done();
+                    }); 
+                z3.kill();
+            });
+        }); 
     });
 /*
 
