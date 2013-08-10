@@ -131,49 +131,38 @@
         		(z_xor v1 v2)
         		(z_plus v1 v2)))))
 
-;(declare-const op1 Op1Type)
-;(declare-const op2 Op2Type)
-;(declare-const c1 Op0Type)
-
-;(define-fun hole_v((v Val)) Val
-;	(synth_op1 op1 v))
-
-;(define-fun hole_c((v Op0Type)) Val
-;	(synth_op1 op1 (synth_op0 c1)))
-
-;(declare-const chain (List (Pair Op1Type Op0Type)))
-
-;(define-fun lambda_hole ((x Val)) Val
-;  (synth_op1 (first (head chain)) (synth_op0 (second (head chain)) x))
+; unary test
+;(declare-const o_01 Op1Type)
+;(declare-const o_02 Op1Type)
+;(declare-const o_03 Op1Type)
+;(declare-const o_04 Op1Type)
+;(declare-const o_05 Op1Type)
+;(declare-const v_05 Op0Type)
+;(define-fun lambda ((x Val)) Val
+;  (synth_op1 o_01 (synth_op1 o_02 (synth_op1 o_03 (synth_op1 o_04 (synth_op1 o_05 (synth_op0 v_05 x))))))
 ;)
+;(assert (= (lambda #x0000000071345345) #x0000000000000E26))
+;(check-sat)
+;(get-model)
 
-(declare-const o_01 Op1Type)
+; binary unary mixed test with 2 iterations
+(declare-const o_01 Op2Type)
+(declare-const v1_01 Op0Type)
+(declare-const v2_01 Op0Type)
+
 (declare-const o_02 Op1Type)
-(declare-const o_03 Op1Type)
-(declare-const o_04 Op1Type)
-(declare-const o_05 Op1Type)
-
-(declare-const v_01 Op0Type)
-(declare-const v_02 Op0Type)
-(declare-const v_03 Op0Type)
-(declare-const v_04 Op0Type)
-(declare-const v_05 Op0Type)
+(declare-const o_03 Op2Type)
+(declare-const v1_03 Op0Type)
 
 (define-fun lambda ((x Val)) Val
-  (synth_op1 o_01 (synth_op1 o_02 (synth_op1 o_03 (synth_op1 o_04 (synth_op1 o_05 (synth_op0 v_04 x))))))
-)
-
-;(assert (not (= chain nil)))
-
-(assert (= (lambda #x0000000071345345) #x0000000000000E26))
-
-;(assert (= (lambda_hole #x0000000001345345) #xFFFFFFFFFECBACBA))
-;(assert (= (lambda_hole #x0000000001345345) #x0000000000000000))
-;(assert (= (lambda_hole (_ bv1 64)) #x0000000000000002))
-;(assert (= (lambda_hole #x0000000001345345) #xFFFFFFFFFFFFFFFF))
-;(assert (= (lambda_hole #x0000000001345345) #xFFFFFFFFFFFFFFFE))
-;(simplify (z_shr16 #x0000000001345345))
+    (synth_op2 o_03 (synth_op0 v1_03 x) (synth_op1 o_02 (synth_op2 o_01 (synth_op0 v1_01 x) (synth_op0 v2_01 x)))))
+    
+(assert (= (lambda (_ bv3 64)) #x000000000000000B))
 
 (check-sat)
 (get-model)
 
+(assert (= (lambda #x0000000000567567) #x0000000000FA9FB7))
+
+(check-sat)
+(get-model)
