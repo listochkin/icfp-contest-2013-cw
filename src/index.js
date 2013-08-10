@@ -33,7 +33,7 @@ fs.readFile(problemsFile, function (err, data) {
 problems_read();
 
 function problems_read() {
-    api.train(11, ['fold'], function (problem) {
+    api.train(30, ['tfold'], function (problem) {
             console.log(problem);
             //expect(problem.size).to.equal(3);            
         });        

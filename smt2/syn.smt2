@@ -7,7 +7,8 @@
 (declare-datatypes () ((Op0Type C0 C1 VAR)))
 (declare-datatypes () ((Op0TypeFold C0F C1F V1 V2 V3)))
 
-(declare-datatypes (T1 T2) ((Pair (mk-pair (first T1) (second T2)))))
+;(declare-datatypes (T1 T2) ((Pair (mk-pair (first T1) (second T2)))))
+;(declare-datatypes (T1 T1 T2 T3 T5) ((Tuple (mk-tuple (optype T1) (op00 T2) (op01 T3)(op1 T4)(op2 T5)))))
 ;(declare-datatypes (T) ((Lst nil (cons (hd T) (tl Lst)))))
 
 ; operators
@@ -140,22 +141,38 @@
 ;(define-fun hole_c((v Op0Type)) Val
 ;	(synth_op1 op1 (synth_op0 c1)))
 
-(declare-const chain (List (Pair Op1Type Op0Type)))
+;(declare-const chain (List (Pair Op1Type Op0Type)))
 
-(define-fun lambda_hole ((x Val)) Val
-  (synth_op1 (first (head chain)) (synth_op0 (second (head chain)) x))
+;(define-fun lambda_hole ((x Val)) Val
+;  (synth_op1 (first (head chain)) (synth_op0 (second (head chain)) x))
+;)
+
+(declare-const o_01 Op1Type)
+(declare-const o_02 Op1Type)
+(declare-const o_03 Op1Type)
+(declare-const o_04 Op1Type)
+(declare-const o_05 Op1Type)
+
+(declare-const v_01 Op0Type)
+(declare-const v_02 Op0Type)
+(declare-const v_03 Op0Type)
+(declare-const v_04 Op0Type)
+(declare-const v_05 Op0Type)
+
+(define-fun lambda ((x Val)) Val
+  (synth_op1 o_01 (synth_op1 o_02 (synth_op1 o_03 (synth_op1 o_04 (synth_op1 o_05 (synth_op0 v_04 x))))))
 )
 
-(assert (not (= chain nil)))
+;(assert (not (= chain nil)))
+
+(assert (= (lambda #x0000000071345345) #x0000000000000E26))
 
 ;(assert (= (lambda_hole #x0000000001345345) #xFFFFFFFFFECBACBA))
 ;(assert (= (lambda_hole #x0000000001345345) #x0000000000000000))
-(assert (= (lambda_hole (_ bv2 64)) #xFFFFFFFFFFFFFFFD))
 ;(assert (= (lambda_hole (_ bv1 64)) #x0000000000000002))
 ;(assert (= (lambda_hole #x0000000001345345) #xFFFFFFFFFFFFFFFF))
 ;(assert (= (lambda_hole #x0000000001345345) #xFFFFFFFFFFFFFFFE))
-
-(simplify (z_shr16 #x0000000001345345))
+;(simplify (z_shr16 #x0000000001345345))
 
 (check-sat)
 (get-model)
