@@ -6,8 +6,8 @@
   "private": true,
   "scripts": {
     "start": "node src/index.js",
-    "test": "mocha test --timeout 60s --reporter nyan",
-    "watch": "mocha --timeout 60s --watch --reporter min"
+    "test": "mocha test --timeout 120 --reporter nyan",
+    "watch": "mocha --timeout 120s --watch --reporter min"
   },
   "repository": {
     "type": "git",

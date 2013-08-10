@@ -51,4 +51,14 @@ describe('ICFP cloudapp.net endpoint', function () {
     //         done();
     //     });
     // });
+
+    // it('should throttle requests', function (done) {
+    //     api.guess('MIlL8xHKKLqZV28YCj6OvR4B', '(lambda (x_9462) (if0 (plus (not x_9462) 1) (shr1 x_9462) (not x_9462)))', function (body) {
+    //         console.log(body);
+    //         api.guess('MIlL8xHKKLqZV28YCj6OvR4B', '(lambda (x_9462) (if0 (plus (not x_9462) 1) (shr1 x_9462) (not x_9462)))', function (body) {
+    //             console.log(body);
+    //             done();
+    //         });
+    //     });
+    // });
 });
