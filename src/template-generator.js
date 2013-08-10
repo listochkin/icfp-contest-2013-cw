@@ -3,7 +3,7 @@
 var expr_size = require('../src/expr_size.js');
 
 
-// TODO add support for 'fold' and 'tfold'
+// TODO add support for and 'tfold'
 //
 
 
@@ -27,7 +27,7 @@ function next_op1(len, crumbs) {
     if (len === 2 && crumbs)
         return null;
 
-    expression = next_template(len - 1, crumbs && crumbs[1]);
+    expression = next_expression(len - 1, crumbs && crumbs[1]);
 
     if (!expression)
         return null;
@@ -41,76 +41,120 @@ function next_op2(len, crumbs) {
     if (!len || len < 3)
         return null;
 
-    e1 = crumbs && crumbs[1] || next_template(1);
+    e1 = crumbs && crumbs[1] || next_expression(1);
     e1_len = expr_size(e1);
-    e2 = next_template(len - e1_len - 1, crumbs && crumbs[2]);
+    e2 = next_expression(len - e1_len - 1, crumbs && crumbs[2]);
 
-    if (!e2) {
-        e1_len += 1;
+    if (e2)
+        return ['op2', e1, e2];
 
-        if (e1_len > (len - 1) / 2)
-            return null;
-
-        e1 = next_template(e1_len, crumbs && crumbs[1]);
-        if (!e1)
-            return null;
-
-        e2 = next_template(len - e1_len - 1);
+    e1 = next_expression(e1_len, crumbs && crumbs[1]);
+    if (e1) {
+        next_expression(len - e1_len - 1);
+        return ['op2', e1, e2];
     }
 
+    e1_len += 1;
+
+    if (e1_len > (len - 1) / 2)
+        return null;
+
+    e1 = next_expression(e1_len, crumbs && crumbs[1]);
+    if (!e1)
+        return null;
+
+    e2 = next_expression(len - e1_len - 1);
     return ['op2', e1, e2];
 
 }
 
-function next_if0(len, crumbs) {
-        var e1, e2, e3, e1_len, e2_len;
+function next_trinary_expression(len, crumbs, operator, operator_len) {
+    var e1, e2, e3, e1_len, e2_len;
 
-        if (!len || len < 4)
-            return null;
+    if (!len || len < 3 + operator_len)
+        return null;
 
-        e1 = crumbs && crumbs[1] || next_template(1);
-        e1_len = expr_size(e1);
+    e1 = crumbs && crumbs[1] || next_expression(1);
+    e1_len = expr_size(e1);
 
-        e2 = crumbs && crumbs[2] || next_template(1);
-        e2_len = expr_size(e2);
+    e2 = crumbs && crumbs[2] || next_expression(1);
+    e2_len = expr_size(e2);
 
-        e3 = next_template(len - e1_len - e2_len - 1, crumbs && crumbs[3]);
+    e3 = next_expression(len - e1_len - e2_len - operator_len, crumbs && crumbs[3]);
 
-        if (!e3) {
-            e2_len += 1;
 
-            if (e1_len + e2_len >= len - 1) {
-                // reset e2 too
-                e1_len += 1;
-                if (e1_len >= len - 2)
-                    return null;
+    if (e3)
+        return [operator, e1, e2, e3];
 
-                e1 = next_template(e1_len, crumbs && crumbs[1]);
-                return next_if0(len, ['if0', e1, null, null]);
-            }
-            else {
-                e2 = next_template(e2_len, crumbs && crumbs[2]);
-                return next_if0(len, ['if0', e1, e2, null]);
-            }
+    // there are no more e3 of given len
+    // let's reset e3 and get the next e2
+    e2 = next_expression(e2_len, crumbs && crumbs[2]);
 
-        }
+    if (e2) {
+        e3 = next_expression(len - e1_len - e2_len - operator_len);
+        return [operator, e1, e2, e3];
+    }
 
-        return ['if0', e1, e2, e3];
+    // there are no new e2 either. Let's increase e2 length and start over
+    e2_len += 1;
+    if (e1_len + e2_len < len - operator_len) {
+        e2 = next_expression(e2_len);
+        return next_trinary_expression(len, [operator, e1, e2, null], operator, operator_len);
+    }
+
+    // we ran out of e2's for e1. Let's get next e1
+    e1 = next_expression(e1_len, crumbs && crumbs[1]);
+    if (e1) {
+        return next_trinary_expression(len, [operator, e1, null, null], operator, operator_len);
+    }
+
+    // start over e1 with the new len
+    e1_len += 1;
+    if (e1_len >= len - operator_len - 1)
+        return null;
+
+    e1 = next_expression(e1_len);
+    return next_trinary_expression(len, [operator, e1, null, null], operator, operator_len);
 }
 
+
+function next_if0(len, crumbs) {
+    return next_trinary_expression(len, crumbs, 'if0', 1);
+}
+
+function next_fold(len, crumbs) {
+    return next_trinary_expression(len, crumbs, 'fold', 2);
+}
+
+function next_program(len, current) {
+    var expression;
+
+    if (!len || len < 2)
+        return null;
+
+    expression = next_expression(len - 1, current && current[2]);
+
+    if (!expression)
+        return null;
+
+    return ['lambda', 'c', expression];
+
+}
 
 global.TEMPLATE_EXPRESSIONS = {
     c: next_c,
     op1: next_op1,
     op2: next_op2,
-    if0: next_if0
+    if0: next_if0,
+    fold: next_fold,
+    tfold: null //next_tfold
 };
 
 //global.expressions = ['c', 'op1', 'op2', 'if', 'fold'];
 
-global.expressions = ['c', 'op1', 'op2', 'if0'];
+global.expressions = ['c', 'op1', 'op2', 'if0', 'fold'];
 
-function next_template(len, crumbs) {
+function next_expression(len, crumbs) {
     var expression;
     var current;
 
@@ -140,5 +184,6 @@ function next_template(len, crumbs) {
 };
 
 module.exports = {
-    next_template: next_template
+    next_expression: next_expression,
+    next_program: next_program
 }
