@@ -6,7 +6,6 @@ var expr_size = require('../src/expr_size.js');
 // TODO optimize 'fold'. Exclude cases of fold
 //
 
-
 function next_c(len, crumbs) {
     if (len != 1)
         return null;
@@ -45,8 +44,9 @@ function next_op2(len, crumbs) {
     e1_len = expr_size(e1);
     e2 = next_expression(len - e1_len - 1, crumbs && crumbs[2]);
 
-    if (e2)
+    if (e2) {
         return ['op2', e1, e2];
+    }
 
     e1 = next_expression(e1_len, crumbs && crumbs[1]);
     if (e1) {
@@ -64,6 +64,7 @@ function next_op2(len, crumbs) {
         return null;
 
     e2 = next_expression(len - e1_len - 1);
+    
     return ['op2', e1, e2];
 
 }
@@ -83,8 +84,9 @@ function next_trinary_expression(len, crumbs, operator, operator_len) {
     e3 = next_expression(len - e1_len - e2_len - operator_len, crumbs && crumbs[3]);
 
 
-    if (e3)
+    if (e3) {
         return [operator, e1, e2, e3];
+    }
 
     // there are no more e3 of given len
     // let's reset e3 and get the next e2
@@ -125,7 +127,7 @@ function next_if0(len, crumbs) {
 function next_fold(len, crumbs) {
     if (!len || len < 6)
         return null;
-
+    
     return next_trinary_expression(len, crumbs, 'fold', 2);
 }
 
@@ -143,25 +145,6 @@ function next_tfold(len, current) {
     return ['lambda', 'x', '0', expression];
 }
 
-function next_program(len, current) {
-    var expression;
-    var options = {
-        fold_allowed : true
-        //fold_allowed : false
-    };
-
-    if (!len || len < 2)
-        return null;
-
-    expression = next_expression(len - 1, current && current[2], options);
-
-    if (!expression)
-        return null;
-
-    return ['lambda', 'x', expression];
-
-}
-
 var TEMPLATE_EXPRESSIONS = {
     c: next_c,
     op1: next_op1,
@@ -171,7 +154,7 @@ var TEMPLATE_EXPRESSIONS = {
     tfold: null //next_tfold
 };
 
-var expressions = ['c', 'op1', 'op2', 'if0', 'fold'];
+var expressions = ['fold', 'op2', 'op1', 'c', 'if0'];
 
 function next_expression(len, current, options) {
     var expression;
@@ -179,17 +162,29 @@ function next_expression(len, current, options) {
     var fold_allowed = options && options.fold_allowed;
 
     index = expressions.indexOf(current && current[0]);
-
-    if (index === -1)
+   
+    if (index === -1) {
         index = 0;
+        
+        if (expressions[index] === 'fold' && !fold_allowed)
+            index += 1;
+        /*if ((!isOp2 && expressions[index] === 'op2')) {
+            index++;
+        }*/
+    }
 
     do {
         // we cannon build an expression of the specified length anymore
         if (index >= expressions.length)
             return null;
+        
+        
 
         // build expression tree for the next expression type
         expression = TEMPLATE_EXPRESSIONS[expressions[index]](len, current);
+        
+        
+        //console.log(expression);
 
         if (!expression) {
             // old expressions are not actual for new operator anymore
@@ -197,16 +192,111 @@ function next_expression(len, current, options) {
 
             index += 1;
             if (expressions[index] === 'fold' && !fold_allowed)
-                index += 1;
+                index += 1;            
+            //if ((!isOp1 && expressions[index] === 'op1') || (!isOp2 && expressions[index] === 'op2') || (!isIf && expressions[index] === 'if0')) {
+                //index++;
+            //}
         }
+        
 
     } while(!expression);
-
+    
     return expression;
 
 };
 
+function next_program(len, current, operators) {
+    
+    if(typeof(operators) === 'undefined')
+        operators = [ 'xor', 'plus', 'and', 'or', 'not', 'shl1', 'shr1', 'shr16', 'shr4', 'fold', 'if0' ];
+        
+    var isOp1 = false;
+    var isOp2 = false;
+    var isIf = false;
+    var isFold = false;
+    
+    for (var i = 0; i < operators.length; i++) {
+        switch(operators[i])
+        {
+            case 'not':
+            case 'shl1':
+            case 'shr1':
+            case 'shr4':
+            case 'shr16':
+                isOp1 = true;
+                break
+            case 'and':
+            case 'or':
+            case 'xor':
+            case 'plus':
+                isOp2 = true;
+                break
+            case 'if0':
+                isIf = true;
+                break
+            case 'fold':
+                isFold = true;
+                break
+        }
+    }
+    
+    var expression = current && current[2];
+    var options = {
+        fold_allowed : isFold
+        //fold_allowed : false
+    };
+
+    if (!len || len < 2)
+        return null;
+
+    function post_check(s_expr) {
+        
+        if(s_expr instanceof Array) {
+            
+            for (var i = 0; i < s_expr.length; i++) {
+                
+                if(s_expr[i] instanceof Array) 
+                    post_check(s_expr[i]);
+                else {                    
+                    switch(s_expr[i])
+                    {
+                        case 'op1':                        
+                            isGotOp1 = true;                            
+                            break
+                        case 'op2':                        
+                            isGotOp2 = true;
+                            break
+                        case 'if0':
+                            isGotIf = true;
+                            break
+                        case 'fold':
+                            isGotFold = true;
+                            break
+                    }
+                }
+            }
+        }
+    }
+    
+    do {
+        expression = next_expression(len - 1, expression && expression, options);
+        
+        var isGotOp1 = false;
+        var isGotOp2 = false;
+        var isGotIf = false;
+        var isGotFold = false;
+        post_check(expression);
+    } while(expression && ((isIf && !isGotIf) /*|| (isFold && !isGotFold)*/ || (isOp1 && !isGotOp1) || (isOp2 && !isGotOp2)
+                           || (!isOp1 && isGotOp1) || (!isOp2 && isGotOp2) || (!isIf && isGotIf)));
+    
+    
+    if (!expression)
+        return null;
+
+    return ['lambda', 'x', expression];
+}
+
+
 module.exports = {
-    next_expression: next_expression,
     next_program: next_program
 }

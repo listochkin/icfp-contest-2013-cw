@@ -10,6 +10,15 @@ var templateUtil = require('../src/template-util.js');
 var Lparse = require('LISP.js').parse;
 
 /*
+var expr;
+for (var i = 0; i < 100; i++) {
+    expr = generator.next_program(30, expr);
+    console.log(expr_str(expr));
+    if (!expr)
+        break;
+}
+
+/*
 function Solver(task) {
     var constrains,
         template;
@@ -23,14 +32,14 @@ function Solver(task) {
 */
 //console.log(expr_str(expr));
 
-var operators = [ 'and', 'if0', 'or', 'shl1', 'shr1', 'shr16', 'shr4', 'xor' ];
+//var operators = [ 'and', 'if0', 'or', 'shl1', 'shr1', 'shr16', 'shr4', 'xor' ];
 
-api.train(3, [], function (train) {
-        console.log(train/*.challenge*/);
+api.train(15, [], function (train) {
+        console.log(train);
         
         var expr;
         //for (var i = 0; i < 300; i++)
-            expr = generator.next_program(train.size, expr);
+            expr = generator.next_program(train.size, expr, train.operators);
         console.log(expr_str(expr));
         
         var constraint = "0xFE5645A7867867B3";
@@ -60,7 +69,7 @@ api.train(3, [], function (train) {
                     }); 
                 z3.kill();
             });
-        }); 
+        });
     });
 /*
 

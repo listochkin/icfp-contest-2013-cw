@@ -15,9 +15,9 @@ function respond (method) { /* follows by top function arguments */
     var args = Array.prototype.splice.call(arguments, 0, arguments.length);
 
     return function (body) {
-        console.log(args);
+        //console.log(args);
         try {
-            console.log(body.toString(), arguments);
+            //console.log(body.toString(), arguments);
             body = JSON.parse(body.toString());
             // reset cooldown
             cooldown = 7 * 1000;
@@ -26,7 +26,7 @@ function respond (method) { /* follows by top function arguments */
             callback(body);
         } catch (e) {
             // too many requests
-            console.log('retrying...', method, cooldown);
+            //console.log('retrying...', method, cooldown);
             setTimeout(function (method, args) {
                 API[method].apply(API, args);
             }, cooldown, method, args.splice(1, args.length - 1));
