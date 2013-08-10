@@ -60,7 +60,7 @@
 )
 
 (define-fun z_if0 ((e Val) (a Val) (b Val)) Val
-	(if (= e (_ bv0 64)) a b)
+    (ite (= e (_ bv0 64)) a b)
 )
 
 (define-fun z_fold_i ((x Val) (i Val)) Val
@@ -146,23 +146,61 @@
 ;(get-model)
 
 ; binary unary mixed test with 2 iterations
-(declare-const o_01 Op2Type)
-(declare-const v1_01 Op0Type)
-(declare-const v2_01 Op0Type)
+;(declare-const o_01 Op2Type)
+;(declare-const v1_01 Op0Type)
+;(declare-const v2_01 Op0Type)
+;(declare-const o_02 Op1Type)
+;(declare-const o_03 Op2Type)
+;(declare-const v1_03 Op0Type)
+;(define-fun lambda ((x Val)) Val
+;    (synth_op2 o_03 (synth_op0 v1_03 x) (synth_op1 o_02 (synth_op2 o_01 (synth_op0 v1_01 x) (synth_op0 v2_01 x)))))  
+;(assert (= (lambda (_ bv3 64)) #x000000000000000B))
+;(check-sat)
+;(get-model)
+;(assert (= (lambda #x0000000000567567) #x0000000000FA9FB7))
+;(check-sat)
+;(get-model)
 
-(declare-const o_02 Op1Type)
-(declare-const o_03 Op2Type)
-(declare-const v1_03 Op0Type)
+
+; bonus problem
+(define-fun lambda_orig ((x Val)) Val
+    (z_if0
+	(z_and (z_xor x (z_shr1 (z_shl1 (z_not (z_shl1 x))))) (_ bv1 64))
+	(z_and (z_shl1 x) (z_shr16 x)) (z_or (z_not (z_shl1 (_ bv1 64))) x)))
+(simplify (lambda_orig #x0000000000567567))
+
+(declare-const o_01 Op2Type)
+(declare-const o_02 Op2Type)
+(declare-const o_03 Op1Type)
+(declare-const o_04 Op1Type)
+(declare-const o_05 Op1Type)
+(declare-const o_06 Op1Type)
+(declare-const o_07 Op2Type)
+(declare-const o_08 Op1Type)
+(declare-const o_09 Op1Type)
+(declare-const o_10 Op2Type)
+(declare-const o_11 Op1Type)
+(declare-const o_12 Op1Type)
+
+(declare-const v_01 Op0Type)
+(declare-const v_02 Op0Type)
+(declare-const v_03 Op0Type)
+(declare-const v_04 Op0Type)
+(declare-const v_05 Op0Type)
+(declare-const v_06 Op0Type)
+(declare-const v_07 Op0Type)
+
 
 (define-fun lambda ((x Val)) Val
-    (synth_op2 o_03 (synth_op0 v1_03 x) (synth_op1 o_02 (synth_op2 o_01 (synth_op0 v1_01 x) (synth_op0 v2_01 x)))))
-    
-(assert (= (lambda (_ bv3 64)) #x000000000000000B))
+    (z_if0
+        (synth_op2 o_01 (synth_op2 o_02 (synth_op0 v_01 x) (synth_op1 o_03 (synth_op1 o_04 (synth_op1 o_05 (synth_op1 o_06 (synth_op0 v_02 x)))))) (synth_op0 v_03 x))
+        (synth_op2 o_07 (synth_op1 o_08 (synth_op0 v_04 x)) (synth_op1 o_09 (synth_op0 v_05 x))) (synth_op2 o_10 (synth_op1 o_11 (synth_op1 o_12 (synth_op0 v_06 x))) (synth_op0 v_07 x))))
 
-(check-sat)
-(get-model)
-
-(assert (= (lambda #x0000000000567567) #x0000000000FA9FB7))
+(assert (= (lambda #x0000000000567567) #x0000000000000046))
+(assert (= (lambda #x0000000445645345) #x0000000000000400))
+(assert (= (lambda #x0000000000000000) #xFFFFFFFFFFFFFFFD))
+(assert (= (lambda #x00000005FFFFFFFF) #x000000000005FFFE))
+(assert (= (lambda #x0054675467456745) #x0000000046004600))
 
 (check-sat)
 (get-model)
