@@ -42,14 +42,17 @@ function solve(problem, done) {
 }
 
 function z3trySolve(problem, template, constraints) {
+    console.log('z3trySolve: ', arguments);
     var smt = smtFor(problem, template, constraints);
 
     callZ3(smt, function (z3response) {
+        console.log('Z3 Response: ', z3response);
         if (!isSat(z3response)) {
             // this template is not satisfiable, try the next one
             templateLoop(template);
         } else {
             callZ3('(get-model)', function (z3response) {
+                console.log('Z3 Response: ', z3response);
                 var values = valuesFrom(z3response);
                 // generate program based on values from z3
                 var program = generateProgram(template, values);
@@ -101,6 +104,7 @@ function smtFor(problem, template, constraints) {
 var z3 = new Z3();
 
 function callZ3(smt, callback) {
+    console.log('SMT: ', smt);
     z3.write(smt, callback);
 }
 
@@ -117,8 +121,9 @@ function generateProgram(template, values) {
 }
 
 function guess(problem, program, callback) {
-    api.guess(problem.id, program, function(response) {
-        console.log(response.status);
+    console.log('Calling guess with: ', problem, program);
+    api.guess(problem.id, program.toString(), function(response) {
+        console.log('Guess returned: ', response.status);
         var correct = response.status.indexOf('win') !== -1;
         callback(correct, [response.values]);
     });
