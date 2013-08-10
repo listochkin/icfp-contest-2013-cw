@@ -8,6 +8,7 @@ hole {
  */
 
 
+var Lparse = require('LISP.js').parse;
 
 
 function toProgram(template, variables) {
@@ -65,6 +66,9 @@ function mapZ32BV (operator) {
  */
 
 function extractVariables(z3OutExpression) {
+    
+    z3OutExpression = Lparse(z3OutExpression);
+    
     var i = 0;
     var variables = [];
 

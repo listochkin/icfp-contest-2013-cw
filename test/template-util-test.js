@@ -29,8 +29,5 @@ VAR)                                 \
 VAR)                                 \
 )';
 
-var out = Lparse(z3Out);
-console.log(expr_str(out));
-
-variables = templateUtil.extractVariables(out);
+variables = templateUtil.extractVariables(z3Out);
 console.log(variables.toString());

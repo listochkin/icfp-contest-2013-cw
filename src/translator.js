@@ -124,45 +124,88 @@ console.log(translate_constraint(0, 0));
 //translate_template(expr, operators)
 */
 
-
-function expr_tokenize(s_expr) {
-    if(s_expr instanceof Array) {
-            
-            for (var i = 0; i < s_expr.length; i++) {
-                
-                if(s_expr[i] instanceof Array) 
-                    expr_tokenize(s_expr[i]);
-                else
-                    switch(s_expr[i]) {
-                        case 'op1':
-                            s_expr[i] = 'synth_op1 h'+global.cur_op;
-                            global.ops+='(declare-const h'+global.cur_op+' Op1Type)\n';
-                            global.cur_op++;
-                            break;
-                        case 'op2':
-                            s_expr[i] = 'synth_op2 h'+global.cur_op;
-                            global.ops+='(declare-const h'+global.cur_op+' Op2Type)\n';
-                            global.cur_op++;
-                            break;
-                        case 'c':
-                            s_expr[i] = '(synth_op0 h'+global.cur_op+' x)';
-                            global.ops+='(declare-const h'+global.cur_op+' Op0Type)\n';
-                            global.cur_op++;
-                            break;
-                    }
-            }
+function deepCopy(obj) {
+  if (typeof obj == 'object') {
+    if (isArray(obj)) {
+      var l = obj.length;
+      var r = new Array(l);
+      for (var i = 0; i < l; i++) {
+        r[i] = deepCopy(obj[i]);
+      }
+      return r;
+    } else {
+      var r = {};
+      r.prototype = obj.prototype;
+      for (var k in obj) {
+        r[k] = deepCopy(obj[k]);
+      }
+      return r;
     }
+  }
+  return obj;
 }
+
+var ARRAY_PROPS = {
+  length: 'number',
+  sort: 'function',
+  slice: 'function',
+  splice: 'function'
+};
+
+/**
+ * Determining if something is an array in JavaScript
+ * is error-prone at best.
+ */
+function isArray(obj) {
+  if (obj instanceof Array)
+    return true;
+  // Otherwise, guess:
+  for (var k in ARRAY_PROPS) {
+    if (!(k in obj && typeof obj[k] == ARRAY_PROPS[k]))
+      return false;
+  }
+  return true;
+}
+
 
 function translate_template(template, operators) {
     var smt2 = bootstrap;
     
-    global.ops = '';
-    global.cur_op = 1;    
+    var ops = '';
+    var cur_op = 0;    
     var lambda = '(define-fun lambda ((x Val)) Val \n    '; 
     
-    var expr = template.slice(2)[0];
+    var expr = deepCopy(template.slice(2)[0]);
     expr_tokenize(expr);
+    
+    function expr_tokenize(s_expr) {
+        if(s_expr instanceof Array) {
+                
+                for (var i = 0; i < s_expr.length; i++) {
+                    
+                    if(s_expr[i] instanceof Array) 
+                        expr_tokenize(s_expr[i]);
+                    else
+                        switch(s_expr[i]) {
+                            case 'op1':
+                                s_expr[i] = 'synth_op1 h'+cur_op;
+                                ops+='(declare-const h'+cur_op+' Op1Type)\n';
+                                cur_op++;
+                                break;
+                            case 'op2':
+                                s_expr[i] = 'synth_op2 h'+cur_op;
+                                ops+='(declare-const h'+cur_op+' Op2Type)\n';
+                                cur_op++;
+                                break;
+                            case 'c':
+                                s_expr[i] = '(synth_op0 h'+cur_op+' x)';
+                                ops+='(declare-const h'+cur_op+' Op0Type)\n';
+                                cur_op++;
+                                break;
+                        }
+                }
+            }
+    }
     
     //console.log(expr);
     
@@ -178,6 +221,6 @@ function translate_constraint(input, output) {
     smt2+= ("000000000000000" + input.toString(16)).substr(-16);
     smt2+=') #x';
     smt2+= ("000000000000000" + output.toString(16)).substr(-16);
-    smt2+='))\n(check-sat)\n(get-model)\n\n';
+    smt2+='))\n(check-sat)\n\n';
     return smt2;
 }
