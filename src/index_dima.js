@@ -8,7 +8,7 @@ var expr;
 
 var i = 0;
 do {
-    expr = generator.next_template(30, expr);
+    expr = generator.next_template(10, expr);
 //    console.log(expr_str(expr));
     i++;
 } while (expr);
