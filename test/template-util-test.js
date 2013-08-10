@@ -23,7 +23,7 @@ OR)                                  \
 PLUS)                                \
 (define-fun h4 () Op0Type            \
 C1)                                  \
-(define-fun h6 () Op0Type            \
+(define-fun h0 () Op0Type            \
 VAR)                                 \
 (define-fun h5 () Op0Type            \
 VAR)                                 \

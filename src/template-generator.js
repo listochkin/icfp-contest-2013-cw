@@ -162,7 +162,7 @@ function next_program(len, current) {
 
 }
 
-global.TEMPLATE_EXPRESSIONS = {
+var TEMPLATE_EXPRESSIONS = {
     c: next_c,
     op1: next_op1,
     op2: next_op2,
@@ -171,9 +171,7 @@ global.TEMPLATE_EXPRESSIONS = {
     tfold: null //next_tfold
 };
 
-//global.expressions = ['c', 'op1', 'op2', 'if', 'fold'];
-
-global.expressions = ['c', 'op1', 'op2', 'if0', 'fold'];
+var expressions = ['c', 'op1', 'op2', 'if0', 'fold'];
 
 function next_expression(len, current, options) {
     var expression;

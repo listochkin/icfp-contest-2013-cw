@@ -5,7 +5,8 @@ var expr_str = require('./expr_str.js');
 
 module.exports = {    
     translate_template: translate_template,
-    translate_constraint: translate_constraint
+    translate_constraint: translate_constraint,
+    translate_constraint16: translate_constraint16
 }
 
 /*
@@ -329,6 +330,15 @@ function translate_constraint(input, output) {
     smt2+= ("000000000000000" + input.toString(16)).substr(-16);
     smt2+=') #x';
     smt2+= ("000000000000000" + output.toString(16)).substr(-16);
+    smt2+='))\n(check-sat)\n\n';
+    return smt2;
+}
+
+function translate_constraint16(input, output) {
+    var smt2 ='(assert (= (lambda #x';
+    smt2+= input;
+    smt2+=') #x';
+    smt2+= output;
     smt2+='))\n(check-sat)\n\n';
     return smt2;
 }
