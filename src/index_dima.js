@@ -18,13 +18,13 @@ function generate_templates(size, callback) {
 
     expr = generator.next_program(size, expr);
     while(expr) {
-        //callback(expr_str(expr));
+        callback(expr_str(expr));
         expr = generator.next_program(size, expr);
     };
 
 }
 
-size = 14;
+size = 10;
 fileName = path.join(__dirname, '../templates/' + size + '.lisp');
 fs.writeFile(fileName, '', function() {});
 i = 0;
