@@ -10,7 +10,7 @@
 ; op1's for variable
 (define-fun z_not
     ((x (_ BitVec 64))) (_ BitVec 64)
-    (bvsub (bvneg x) (_ bv1 64))
+    (bvnot x)
 )
 
 (define-fun z_shl1
