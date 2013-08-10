@@ -56,7 +56,7 @@ api.train(15, [], function (train) {
             
             z3.write(problem, function (response) {
                 console.log(response);
-                if(response.indexOf('sat') != -1)
+                if(response.indexOf('sat') != -1 && response.indexOf('unsat') == -1)
                     z3.write('(get-model)', function (response) {
                         console.log(response);
                         
