@@ -34,7 +34,7 @@ before(function (done) {
 
 describe('ICFP cloudapp.net endpoint', function () {
     it('should load problems', function () {
-        expect(problems.length).to.equal(1420);
+        expect(problems.length).to.equal(1620);
         expect(problems[0].size).to.equal(3);
         expect(problems[problems.length - 1].size).to.equal(30);
     });
