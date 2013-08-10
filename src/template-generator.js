@@ -3,7 +3,7 @@
 var expr_size = require('../src/expr_size.js');
 
 
-// TODO add support for and 'tfold'
+// TODO optimize 'fold'. Exclude cases of fold
 //
 
 
@@ -50,7 +50,7 @@ function next_op2(len, crumbs) {
 
     e1 = next_expression(e1_len, crumbs && crumbs[1]);
     if (e1) {
-        next_expression(len - e1_len - 1);
+        e2 = next_expression(len - e1_len - 1);
         return ['op2', e1, e2];
     }
 
@@ -123,21 +123,42 @@ function next_if0(len, crumbs) {
 }
 
 function next_fold(len, crumbs) {
+    if (!len || len < 6)
+        return null;
+
     return next_trinary_expression(len, crumbs, 'fold', 2);
 }
 
-function next_program(len, current) {
+function next_tfold(len, current) {
     var expression;
 
-    if (!len || len < 2)
+    if (!len || len < 6)
         return null;
 
-    expression = next_expression(len - 1, current && current[2]);
+    expression = next_expression(len - 4, current && current[2]);
 
     if (!expression)
         return null;
 
-    return ['lambda', 'c', expression];
+    return ['lambda', 'x', '0', expression];
+}
+
+function next_program(len, current) {
+    var expression;
+    var options = {
+        fold_allowed : true
+        //fold_allowed : false
+    };
+
+    if (!len || len < 2)
+        return null;
+
+    expression = next_expression(len - 1, current && current[2], options);
+
+    if (!expression)
+        return null;
+
+    return ['lambda', 'x', expression];
 
 }
 
@@ -154,27 +175,31 @@ global.TEMPLATE_EXPRESSIONS = {
 
 global.expressions = ['c', 'op1', 'op2', 'if0', 'fold'];
 
-function next_expression(len, crumbs) {
+function next_expression(len, current, options) {
     var expression;
-    var current;
+    var index;
+    var fold_allowed = options && options.fold_allowed;
 
-    current = expressions.indexOf(crumbs && crumbs[0]);
+    index = expressions.indexOf(current && current[0]);
 
-    if (current === -1)
-        current = 0;
+    if (index === -1)
+        index = 0;
 
     do {
         // we cannon build an expression of the specified length anymore
-        if (current >= expressions.length)
+        if (index >= expressions.length)
             return null;
 
         // build expression tree for the next expression type
-        expression = TEMPLATE_EXPRESSIONS[expressions[current]](len, crumbs);
+        expression = TEMPLATE_EXPRESSIONS[expressions[index]](len, current);
 
         if (!expression) {
-            current += 1;
-            // old crumbs are not actual for new operator anymore
-            crumbs = null;
+            // old expressions are not actual for new operator anymore
+            current = null;
+
+            index += 1;
+            if (expressions[index] === 'fold' && !fold_allowed)
+                index += 1;
         }
 
     } while(!expression);

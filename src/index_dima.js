@@ -2,20 +2,45 @@ var api = require('../src/api.js');
 
 var generator = require('../src/template-generator.js');
 
-var expr_str = require('../src/expr_str');
+var fs = require('fs'),
+    path = require('path');
 
-var expr;
+var start;
+var size,
+    i;
 
-var i = 0;
-do {
-    expr = generator.next_template(10, expr);
-//    console.log(expr_str(expr));
+var fileName;
+
+
+function generate_templates(size, callback) {
+    var expr;
+    var expr_str = require('../src/expr_str');
+
+    expr = generator.next_program(size, expr);
+    while(expr) {
+        //callback(expr_str(expr));
+        expr = generator.next_program(size, expr);
+    };
+
+}
+
+size = 14;
+fileName = path.join(__dirname, '../templates/' + size + '.lisp');
+fs.writeFile(fileName, '', function() {});
+i = 0;
+start = new Date().getTime();
+generate_templates(size, function(data) {
+    //fs.appendFile(fileName, data + '\n', function() {});
     i++;
-} while (expr);
-console.log(i);
+})
+
+var end = new Date().getTime();
+
+console.log('templates: ' + i);
+console.log('time: ' + (end - start)/1000);
 
 
-//api.train(11, ['fold'], function (problem) {
+//api.train(15, ['tfold'], function (problem) {
 //        console.log(problem);
 //});
 
