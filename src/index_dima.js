@@ -3,6 +3,7 @@ var api = require('../src/api.js');
 var generator = require('../src/template-generator.js');
 
 var Solver = require('../src/solver.js');
+var templateUtil = require('../src/template-util.js');
 
 
 var task;
@@ -16,7 +17,7 @@ task = {
 
 var solver = new Solver(task);
 solver.start();
-solver.stop();
+//solver.stop();
 
 
 
@@ -58,7 +59,7 @@ solver.stop();
 //console.log('time: ' + (end - start)/1000);
 
 
-//api.train(15, ['tfold'], function (problem) {
+//api.train(9, [], function (problem) {
 //        console.log(problem);
 //});
 
