@@ -5,11 +5,13 @@
 (declare-datatypes () ((Op1Type NOT SHL1 SHR1 SHR4 SHR16)))
 (declare-datatypes () ((Op2Type AND OR XOR PLUS)))
 (declare-datatypes () ((Op0Type C0 C1 VAR)))
+(declare-datatypes () ((Op0TypeFold C0F C1F V1 V2 V3)))
 
 (declare-datatypes (T1 T2) ((Pair (mk-pair (first T1) (second T2)))))
 ;(declare-datatypes (T) ((Lst nil (cons (hd T) (tl Lst)))))
 
-; op1's for variable
+; operators
+
 (define-fun z_not
     ((x Val)) Val
     (bvnot x)
@@ -41,9 +43,6 @@
    (bvand x y)
 )
 
-(define-fun z_if0 ((e Val) (a Val) (b Val)) Val
-	(if (= e (_ bv0 64)) a b)
-)
 (define-fun z_or
   ((x Val) (y Val)) Val
    (bvor x y)
@@ -59,6 +58,10 @@
    (bvadd x y)
 )
 
+(define-fun z_if0 ((e Val) (a Val) (b Val)) Val
+	(if (= e (_ bv0 64)) a b)
+)
+
 (define-fun z_fold_i ((x Val) (i Val)) Val
   (bvand (bvlshr x i) (_ bv255 64))
 )
@@ -68,7 +71,6 @@
 ;IMPLEMENT
 (_ bv0 64)
 )
-
 
 (define-fun z_fold
    ((x Val)
@@ -86,9 +88,8 @@
    (z_fold_op (z_fold_i x (_ bv8 64))
    (z_fold_op (z_fold_i x (_ bv0 64)) y))))))))
 )
-;(declare-const op1 Op1Type)
-;(declare-const op2 Op2Type)
-;(declare-const c1 Op0Type)
+
+; synth functions
 
 (define-fun synth_op0 ((x Op0Type)(v Val)) Val
     (if (= x VAR)
@@ -96,6 +97,18 @@
 	(if (= x C0)
 		(_ bv0 64)
 		(_ bv1 64))))
+
+(define-fun synth_op0_fold ((x Op0TypeFold)(v Val)(v2 Val)(v3 Val)) Val
+    (if (= x V1)
+	v
+	(if (= x V2)
+	    v2
+	    (if (= x V3)
+		v3
+		(if (= x C0F)
+		    (_ bv0 64)
+		    (_ bv1 64))))))
+
 
 (define-fun synth_op1 ((h Op1Type)(v Val)) Val
     (if (= h NOT)
@@ -117,7 +130,9 @@
         		(z_xor v1 v2)
         		(z_plus v1 v2)))))
 
-
+;(declare-const op1 Op1Type)
+;(declare-const op2 Op2Type)
+;(declare-const c1 Op0Type)
 
 ;(define-fun hole_v((v Val)) Val
 ;	(synth_op1 op1 v))
@@ -126,7 +141,6 @@
 ;	(synth_op1 op1 (synth_op0 c1)))
 
 (declare-const chain (List (Pair Op1Type Op0Type)))
-
 
 (define-fun lambda_hole ((x Val)) Val
   (synth_op1 (first (head chain)) (synth_op0 (second (head chain)) x))
