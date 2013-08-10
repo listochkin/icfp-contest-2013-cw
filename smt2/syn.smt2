@@ -2,7 +2,10 @@
 
 (declare-datatypes () ((Op1Type NOT SHL1 SHR1 SHR4 SHR16)))
 (declare-datatypes () ((Op2Type AND OR XOR PLUS)))
-(declare-datatypes () ((ConstType C0 C1)))
+(declare-datatypes () ((Op0Type C0 C1 VAR)))
+
+(declare-datatypes (T1 T2) ((Pair (mk-pair (first T1) (second T2)))))
+(declare-datatypes (T) ((Lst nil (cons (hd T) (tl Lst)))))
 
 ; op1's for variable
 (define-fun z_not
@@ -80,10 +83,11 @@
    (z_fold_op (z_fold_i x (_ bv16 64))
    (z_fold_op (z_fold_i x (_ bv8 64))
    (z_fold_op (z_fold_i x (_ bv0 64)) y))))))))
-)(declare-const op1 Op1Type)
-(declare-const op2 Op2Type)
-(declare-const c1 ConstType)
-(declare-const cv Bool)
+)
+;(declare-const op1 Op1Type)
+;(declare-const op2 Op2Type)
+;(declare-const c1 Op0Type)
+
 
 (define-fun synth_op1_v ((h Op1Type)(v (_ BitVec 64))) (_ BitVec 64)
     (if (= h NOT)
@@ -96,30 +100,33 @@
 	        		(z_shr4 v)
 	        		(z_shr16 v))))))
 
-(define-fun synth_op0_c ((x ConstType)) (_ BitVec 64)
+(define-fun synth_op0_c ((x Op0Type)(v (_ BitVec 64))) (_ BitVec 64)
+    (if (= x VAR)
+      v
     (if (= x C0)
 		(_ bv0 64)
-		(_ bv1 64)
+		(_ bv1 64))
 	)
 )
 
-(define-fun hole_v((v (_ BitVec 64))) (_ BitVec 64)
-	(synth_op1_v op1 v))
+;(define-fun hole_v((v (_ BitVec 64))) (_ BitVec 64)
+;	(synth_op1_v op1 v))
 
-(define-fun hole_c((v ConstType)) (_ BitVec 64)
-	(synth_op1_v op1 (synth_op0_c c1)))
+;(define-fun hole_c((v Op0Type)) (_ BitVec 64)
+;	(synth_op1_v op1 (synth_op0_c c1)))
+
+(declare-const chain (Lst (Pair Op1Type Op0Type)))
 
 
 (define-fun lambda_hole ((x (_ BitVec 64))) (_ BitVec 64)
-  (if cv
-    (hole_v x)
-    (hole_c x)
-  )
+  (synth_op1_v (first (hd chain)) (synth_op0_c (second (hd chain)) x))
 )
 
+(assert (not (= chain nil)))
+
 ;(assert (= (lambda_hole #x0000000001345345) #xFFFFFFFFFECBACBA))
-(assert (= (lambda_hole #x0000000001345345) #x0000000000000000))
-;(assert (= (lambda_hole (_ bv2 64)) #xFFFFFFFFFFFFFFFD))
+;(assert (= (lambda_hole #x0000000001345345) #x0000000000000000))
+(assert (= (lambda_hole (_ bv2 64)) #xFFFFFFFFFFFFFFFD))
 ;(assert (= (lambda_hole (_ bv1 64)) #x0000000000000002))
 ;(assert (= (lambda_hole #x0000000001345345) #xFFFFFFFFFFFFFFFF))
 ;(assert (= (lambda_hole #x0000000001345345) #xFFFFFFFFFFFFFFFE))
