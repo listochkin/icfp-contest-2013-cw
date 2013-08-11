@@ -1,0 +1,12 @@
+22 --- op1,op2,op1,c,c
+14 --- op2,op1,op1,c,c
+14 --- op2,op2,c,c,c
+10 --- op1,op1,op2,c,c
+5 --- op1,op2,c,op1,c
+4 --- op2,op1,c,op1,c
+4 --- op1,op1,op1,op1,c
+3 --- op2,c,op1,op1,c
+3 --- op1,if0,c,c,c
+1 --- op2,c,op2,c,c
+Total count: 80
+ ---------------- 
