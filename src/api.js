@@ -11,13 +11,17 @@ function url(action) {
 
 var cooldown = 7 * 1000;
 
+function log() {
+    if (API.LOG_API_CALLS) console.log.apply(console, arguments);
+}
+
 function respond (method) { /* follows by top function arguments */
     var args = Array.prototype.splice.call(arguments, 0, arguments.length);
 
     return function (body) {
-        //console.log(args);
+        log('Network call:', args);
         try {
-            //console.log(body.toString(), arguments);
+            log('Responce: ', body.toString());
             body = JSON.parse(body.toString());
             // reset cooldown
             cooldown = 7 * 1000;
@@ -26,7 +30,7 @@ function respond (method) { /* follows by top function arguments */
             callback(body);
         } catch (e) {
             // too many requests
-            //console.log('retrying...', method, cooldown);
+            log('retrying...', method, cooldown);
             setTimeout(function (method, args) {
                 API[method].apply(API, args);
             }, cooldown, method, args.splice(1, args.length - 1));
@@ -39,6 +43,8 @@ function respond (method) { /* follows by top function arguments */
 
 
 var API = {
+    LOG_API_CALLS: false,
+
     problems: function problems(callback) {
         request(url('myproblems')).pipe(concat(respond('problems', callback)));
     },
@@ -62,7 +68,7 @@ var API = {
         else
             msg.json['arguments'] = args;
             
-        //console.log(msg);
+        //log(msg);
             
         request(msg).pipe(concat(respond('evaluate', id, program, args, callback)));
     },
