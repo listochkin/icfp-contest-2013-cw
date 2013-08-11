@@ -6,42 +6,43 @@ var Solver = require('../src/solver.js');
 var templateUtil = require('../src/template-util.js');
 
 global.problems_solved = 0;
-
+/*
 function solve_problem_train() {
-    console.log('solve_problem train ');
+    //console.log('solve_problem train ');
     
-    api.train(8, ['tfold'], function (problem) {
+    api.train(15, ['fold'], function (problem) {
 //    problem = { id: 'anwX0ykmLU2zmplwr9v8padw',
 //  size: 7,
 //  operators: [ 'plus', 'shl1', 'shr16', 'shr4' ],
 //  challenge: '(lambda (x_6542) (plus (shl1 x_6542) (shr4 (shr16 x_6542))))' };
   
-        console.log('solve_problem train returned');
-        console.log(problem);        
+        //console.log('solve_problem train returned');
+        
       
-        console.log('Solving... solved so far:' +(global.problems_solved++)); 
+        console.log('Solving... solved so far:' +(global.problems_solved++)+'\n\n');
+        console.log(problem);        
     //          console.log(problems[p]); 
     
         //solve_problem(p - 1);
     
         var solver = new Solver(problem); 
         solver.start(function () {
-            console.log('START.CALLBACK '); 
+            //console.log('START.CALLBACK '); 
             solve_problem_train();
         });
     });
 }
 solve_problem_train();
+*/
 
-/*
 function solve_problem(p) {
     console.log('solve_problem ' + p);
     if (p <= 0)
         return;
     
-    while(problems[p].size >= 13
+    while(problems[p].size > 13
           || problems[p].operators.indexOf('fold') != -1
-          || problems[p].operators.indexOf('tfold') != -1
+          || problems[p].operators.indexOf('tfold') == -1
           || problems[p].operators.indexOf('bonus') != -1
           || problems[p].solved
           || (problems[p].solved === false && !problems[p].timeLeft)) {
@@ -53,7 +54,7 @@ function solve_problem(p) {
   
   
     var problem = problems[p]; 
-    console.log('Solving #' + p + ' solved so far:' +(global.problems_solved++) +'\n'+ JSON.stringify(problem)); 
+    console.log('Solving #' + p + ' solved so far:' +(global.problems_solved++) +'\n'+ JSON.stringify(problem)+'\n\n'); 
 //          console.log(problems[p]); 
 
     //solve_problem(p - 1);

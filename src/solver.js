@@ -58,7 +58,7 @@ Solver.prototype.guess = function (callback) {
 
         if (response.status === 'mismatch') {
             // add response.values to pending constraints
-            this.addConstraint([response.values[0], response.values[1]]);
+            //this.addConstraint([response.values[0], response.values[1]]);
             this.z3program += translator.translate_constraint16([[response.values[0], response.values[1]]]);
             this.z3program += translator.check_sat();
         }
@@ -68,17 +68,17 @@ Solver.prototype.guess = function (callback) {
 
 
 Solver.prototype.callZ3 = function(callback) {
-    //console.log(this.z3program);
+    console.log(this.z3program);
     this.z3.write(this.z3program, function (response) {
         console.log(response);
         if(response.indexOf('sat') == 0) {
             this.z3.write('(get-model)', function (response) {
                 console.log(response);
                 this.programHoles = templateUtil.extractVariables(response);
-                console.log(this.programHoles);
+                //console.log(this.programHoles);
 
                 this.program = templateUtil.toProgram(this.template, this.programHoles, this.task.operators)
-                console.log(expr_str(this.template));
+                //console.log(expr_str(this.template));
                 console.log('Satisfied. Suggested program: ' + expr_str(this.program));
                 this.z3program = '';
                 callback(null);
@@ -116,7 +116,7 @@ Solver.prototype.nextTemplate = function(check_sat) {
     if (check_sat)
         this.z3program += translator.check_sat();
         
-    console.log(this.z3program);
+    //console.log(this.z3program);
 }
 
 Solver.prototype.solveGuessLoop = function(cb1) {
@@ -171,7 +171,7 @@ Solver.prototype.start = function(task, callback) {
 
     async.series([
         function(callback) {
-            that.evaluate(['0xFE5645A7867867B3', '0x45FE35AB35041CD2'], callback);
+            that.evaluate(['0xFE5645A7867867B3'/*, '0x45FE35AB35041CD2'*/], callback);
         },
 
         that.solveGuessLoop.bind(that)

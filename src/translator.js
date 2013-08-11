@@ -315,7 +315,7 @@ function translate_template(template, operators) {
                                 s_expr[i] = 'z_fold x1';
                                 foldExpr = s_expr.splice(-1, 1)[0][2];                                
                                 //[3] = undefined;
-                                console.log('!!!!!!!dfg ' + s_expr);
+                                //console.log('!!!!!!!dfg ' + s_expr);
                                 break;
                             /*case 'x1':
                                 s_expr[i] = 'x';
@@ -399,7 +399,9 @@ smt2 += '\n\
    (z_fold_op xAbove (z_fold_i x (_ bv0 64)) y))))))))\n\
 )\n\n';
     smt2+=lambda;
-    smt2+='\n(assert (= h0 VAR))\n\
+    
+    if(isTfold)
+        smt2+='\n(assert (= h0 VAR))\n\
 (assert (= h1 C0))\n';
     return smt2;
 }
