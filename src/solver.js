@@ -46,7 +46,7 @@ Solver.prototype.evaluate = function (inputs, callback) {
 
 Solver.prototype.guess = function (callback) {
 
-    if (!this.z3sat || this.shouldTerminate()) {
+    if (!this.z3sat || !this.task || api.queue.completedTasks[this.task.id]) {
         callback(null);
         return;
     }
@@ -176,16 +176,11 @@ Solver.prototype.start = function(task, callback) {
 
         that.solveGuessLoop.bind(that)
     ], function () {
+        console.log('STOPPING: ', that)
         that.stop();
         callback(that);
     });
 
-}
-
-Solver.prototype.shouldTerminate = function () {
-    var should = !this.task || api.queue.completedTasks[this.task.id];
-    if (should) this.terminate();
-    return should;
 }
 
 Solver.prototype.terminate = function () {
@@ -194,5 +189,6 @@ Solver.prototype.terminate = function () {
 };
 
 Solver.prototype.stop = function () {
+    this.terminate();
     this.z3.kill();
 }
