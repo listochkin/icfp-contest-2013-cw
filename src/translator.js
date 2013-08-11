@@ -232,7 +232,8 @@ function translate_template(template, operators) {
                 isFold = true;
                 break;
             case 'tfold':
-                ops+='';                
+                ops+='';
+                isFold = true;
                 isTfold = true;
                 break;
         }
@@ -249,8 +250,6 @@ function translate_template(template, operators) {
     }
     if(isFold)
         bootstrap += '(declare-datatypes () ((Op0TypeFold C0F C1F V1 V2 V3)))\n';
-    if(isTfold)
-        bootstrap += '(declare-datatypes () ((Op0TypeFold C0F C1F V1 V2)))\n';
 
     bootstrap += '\n' + ops + '\n\
 ; synth functions\n\
@@ -310,13 +309,11 @@ function translate_template(template, operators) {
                                 cur_op++;
                                 break;
                             case 'if0':
-                                s_expr[i] = 'z_if0';                                
+                                s_expr[i] = 'z_if0';
                                 break;
                             case 'fold':
                                 s_expr[i] = 'z_fold x1';
-                                foldExpr = s_expr.splice(-1, 1)[0][2];
-                                if(isTfold)
-                                    s_expr.splice(1, 2, 'x1', '(_ bv0 64)');
+                                foldExpr = s_expr.splice(-1, 1)[0][2];                                
                                 //[3] = undefined;
                                 console.log('!!!!!!!dfg ' + s_expr);
                                 break;
@@ -348,7 +345,7 @@ function translate_template(template, operators) {
                                 cur_op++;
                                 break;
                             case 'c':
-                                s_expr[i] = '(synth_op0_fold h'+cur_op+' xAbove x '+(isTfold ? '' : 'y')+')';
+                                s_expr[i] = '(synth_op0_fold h'+cur_op+' xAbove x y)';
                                 ops+='(declare-const h'+cur_op+' Op0TypeFold)\n';
                                 cur_op++;
                                 break;
@@ -369,18 +366,8 @@ function translate_template(template, operators) {
     smt2+=ops+'\n';
     
     if(isFold)
-        smt2 += '(define-fun synth_op0_fold ((x Op0TypeFold)(v Val)(v2 Val)(v3 Val)) Val\n';
-    if(isTfold)
-        smt2 += '(define-fun synth_op0_fold ((x Op0TypeFold)(v Val)(v2 Val)) Val\n';
+        smt2 += '(define-fun synth_op0_fold ((x Op0TypeFold)(v Val)(v2 Val)(v3 Val)) Val\n';    
     
-    if(isTfold)
-        smt2 += '(if (= x V1)\n\
-	v\n\
-	(if (= x V2)\n\
-	    v2\n\
-            (if (= x C0F)\n\
-		(_ bv0 64)\n\
-		(_ bv1 64)))))\n';
     if(isFold)
         smt2 += '(if (= x V1)\n\
 	v\n\
@@ -412,6 +399,8 @@ smt2 += '\n\
    (z_fold_op xAbove (z_fold_i x (_ bv0 64)) y))))))))\n\
 )\n\n';
     smt2+=lambda;
+    smt2+='\n(assert (= h0 VAR))\n\
+(assert (= h1 C0))\n';
     return smt2;
 }
 

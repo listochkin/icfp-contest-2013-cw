@@ -10,7 +10,7 @@ global.problems_solved = 0;
 function solve_problem_train() {
     console.log('solve_problem train ');
     
-    api.train(11, ['fold'], function (problem) {
+    api.train(8, ['tfold'], function (problem) {
 //    problem = { id: 'anwX0ykmLU2zmplwr9v8padw',
 //  size: 7,
 //  operators: [ 'plus', 'shl1', 'shr16', 'shr4' ],
