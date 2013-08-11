@@ -41,7 +41,7 @@ Queue.prototype.schedule = function(cooldown) {
     this.timer = setTimeout(function() {
         this.drain();
         this.schedule(this.cooldown);
-    }.bind(this), cooldown || 50).unref();
+    }.bind(this), cooldown || 50);//.unref();
 };
 
 Queue.prototype.callNetwork = function() {

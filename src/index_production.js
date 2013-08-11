@@ -6,11 +6,11 @@ var Solver = require('../src/solver.js');
 var templateUtil = require('../src/template-util.js');
 
 global.problems_solved = 0;
-/*
+
 function solve_problem_train() {
     console.log('solve_problem train ');
     
-    api.train(15, [], function (problem) {
+    api.train(11, ['fold'], function (problem) {
 //    problem = { id: 'anwX0ykmLU2zmplwr9v8padw',
 //  size: 7,
 //  operators: [ 'plus', 'shl1', 'shr16', 'shr4' ],
@@ -32,14 +32,14 @@ function solve_problem_train() {
     });
 }
 solve_problem_train();
-*/
 
+/*
 function solve_problem(p) {
     console.log('solve_problem ' + p);
     if (p <= 0)
         return;
     
-    while(problems[p].size >= 9
+    while(problems[p].size >= 13
           || problems[p].operators.indexOf('fold') != -1
           || problems[p].operators.indexOf('tfold') != -1
           || problems[p].operators.indexOf('bonus') != -1
@@ -66,29 +66,23 @@ function solve_problem(p) {
 
 } 
 
+
 var problems = null; 
 var _ = require('underscore'), fs = require('fs'), path = require('path'); 
 var problemsFile = path.join(__dirname, '../problems.json');
 
 api.problems(function (body) {
-    console.log("1"); 
-});
-
-
-/* 
-var problems = null; 
-var _ = require('underscore'), fs = require('fs'), path = require('path'); 
-var problemsFile = path.join(__dirname, '../problems.json');
-
-api.problems(function (body) { 
-    problems = _.sortBy(body, function (p) { 
+    console.log();
+    
+    problems = _.sortBy(JSON.parse(body), function (p) { 
         return p.size; 
     }); 
     fs.writeFileSync(problemsFile, JSON.stringify(problems, null, '\t')); 
     
-  console.log(problems); 
+    console.log(problems); 
   
-    solve_problem(problems.length - 1); 
+    solve_problem(problems.length - 1);
+    
 });
 
 

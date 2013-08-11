@@ -319,7 +319,7 @@ function next_program(len, current, operators) {
         post_check(expression);
     } while(expression && ((isIf && !isGotIf) || (isFold && !isGotFold) || (isOp1 && !isGotOp1) ||
                            (isOp2 && !isGotOp2) || (!isOp1 && isGotOp1) || (!isOp2 && isGotOp2) ||
-                           (!isIf && isGotIf) || (!isFold && isGotFold) || (ifCount > 2)));
+                           (!isIf && isGotIf) || (!isFold && isGotFold) || (ifCount > 1)));
     
     
     if (!expression)
