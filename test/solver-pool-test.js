@@ -11,9 +11,8 @@ var os = require('os'),
 var Solver = require('../src/solver.js');
 var train = require('../src/train-reader.js');
 var api = require('../src/api.js');
-api.LOG_API_CALLS = true;
 
-describe.skip('Pool of Solvers', function () {
+describe('Pool of Solvers', function () {
 
     var problemSet = [], solverPool = [];
 
@@ -38,49 +37,56 @@ describe.skip('Pool of Solvers', function () {
         expect(solverPool.length).to.be.gte(1);
     });
 
-    it.only('solver from pool should solve problems in parallel', function (done) {
+    describe.skip('network tets', function () {
 
-        function getProblem(complexity) {
-            return function (cb) {
-                api.train(complexity, [], function (problem) {
-                    cb(null, problem);
-                });
-            };
-        }
+        it('solver from pool should solve problems in parallel', function (done) {
 
-        async.parallel([
-                getProblem(5),
-                getProblem(12), 
-                getProblem(8),
-                getProblem(7)
-            ], function (err, problems) {
-            if (err) {
-                console.log('Async error: ', err);
-                return;
-            }
-            problems = _(problems).uniq(false, function (p) {
-                return p.id;
-            });
-            console.log('Problems received: ', problems);
-
-            async.parallel(problems.map(function (problem) {
+            function getProblem(complexity) {
                 return function (cb) {
-                    var solver = _.find(solverPool, function (s) {
-                        return s.task == null;
+                    api.train(complexity, [], function (problem) {
+                        cb(null, problem);
                     });
-                    solver.start(problem, function () {
-                        console.log('Solved problem: ', solver.task);
-                        solver.task = null;
-                        cb(null, null);
-                    });
+                };
+            }
+
+            async.parallel([
+                    getProblem(5),
+                    getProblem(12), 
+                    getProblem(8),
+                    getProblem(7)
+                ], function (err, problems) {
+                if (err) {
+                    console.log('Async error: ', err);
+                    return;
                 }
-            }), function () {
-                done();
+                problems = _(problems).uniq(false, function (p) {
+                    return p.id;
+                });
+                console.log('Problems received: ', problems);
+
+                async.parallel(problems.map(function (problem) {
+                    return function (cb) {
+                        var solver = _.find(solverPool, function (s) {
+                            return s.task == null;
+                        });
+                        solver.start(problem, function () {
+                            console.log('Solved problem: ', solver.task);
+                            solver.task = null;
+                            cb(null, null);
+                        });
+                    }
+                }), function () {
+                    done();
+                });
             });
         });
-    });
 
-    after(function () {
-        api.LOG_API_CALLS = false;
-    })
+
+        beforeEach(function () {
+            api.LOG_API_CALLS = true;
+        });
+        afterEach(function () {
+            api.LOG_API_CALLS = false;
+        })
+    });
 });
