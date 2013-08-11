@@ -5,8 +5,53 @@ var generator = require('../src/template-generator.js');
 var Solver = require('../src/solver.js');
 var templateUtil = require('../src/template-util.js');
 
+global.problems_solved = 0;
+function solve_problem(p) {
+    //console.log('solve_problem ' + p);
+    if (p <= 0)
+        return;
+    
+    while(problems[p].size >= 6
+          || problems[p].operators.indexOf('fold') != -1
+          || problems[p].operators.indexOf('tfold') != -1
+          || problems[p].operators.indexOf('bonus') != -1
+          || problems[p].solved) {
+        p--;
+        if (p <= 0)
+            return;
+    }
+  
+  
+    var problem = problems[p]; 
+    console.log('Solving #' + p + ' solved so far:' +(global.problems_solved++) +'\n'+ JSON.stringify(problem)); 
+//          console.log(problems[p]); 
 
-var task;
+    //solve_problem(p - 1);
+
+    var solver = new Solver(problem); 
+    solver.start(function () {
+        //console.log('START.CALLBACK '); 
+        solve_problem(p - 1);
+    });
+
+} 
+  
+var problems = null; 
+var _ = require('underscore'), fs = require('fs'), path = require('path'); 
+var problemsFile = path.join(__dirname, '../problems.json');
+
+api.problems(function (body) { 
+    problems = _.sortBy(body, function (p) { 
+        return p.size; 
+    }); 
+    fs.writeFileSync(problemsFile, JSON.stringify(problems, null, '\t')); 
+    
+//  console.log(problems); 
+  
+    solve_problem(problems.length - 1); 
+}); 
+
+//var task;
 
 /*
 api.train(30, [], function (problem) {
@@ -14,11 +59,12 @@ api.train(30, [], function (problem) {
 });
 */
 
+/*
 task = { id: '35qJL2ivaMnl0cQVbBcf6Y4q',
   size: 30,
   operators: [ 'and', 'if0', 'not', 'plus', 'shl1', 'shr1', 'shr16', 'shr4', 'xor' ],
   challenge: '(lambda (x_48485) (shr1 (if0 (shr1 (plus x_48485 (shr1 x_48485))) (plus (shl1 (not (shr16 (plus (shr4 (xor (shr1 (if0 (and (shl1 (shr1 1)) x_48485) (xor x_48485 0) 1)) 1)) x_48485)))) 0) x_48485)))' };
-  
+*/  
 //(lambda (x) (and x (plus x (plus x (xor x (plus x (or x (xor 1 (or 1 (and x (xor x (plus x (plus 1 (shr4 (if0 1 1 x)))))))))))))))
 //task = {
 //    id: 'hkrI7Vc4Wm0I4E6wzAF4e00W',
@@ -27,8 +73,8 @@ task = { id: '35qJL2ivaMnl0cQVbBcf6Y4q',
 //    program: '(lambda (x_6936) (plus (shl1 (shr1 (shr16 (shr1 x_6936)))) x_6936))'
 //};
 //
-var solver = new Solver(task);
-solver.start();
+//var solver = new Solver(task);
+//solver.start();
 //solver.stop();
 
 
