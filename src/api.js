@@ -41,7 +41,7 @@ Queue.prototype.schedule = function(cooldown) {
     this.timer = setTimeout(function() {
         this.drain();
         this.schedule(this.cooldown);
-    }.bind(this), cooldown || 50);//.unref();
+    }.bind(this), cooldown || 50);
 };
 
 Queue.prototype.stop = function() {
@@ -55,14 +55,12 @@ Queue.prototype.callNetwork = function() {
     }
     this.callingNetwork = true;
     this.methods[request[0]].apply(API, request[1]);
-    this.nextTask = null;
-    this.nextRequest = null;
 };
 
 Queue.prototype.drain = function() {
     if (this.callingNetwork) return;
     // old priority queries first
-    log('Cooldown: ', this.cooldown,' Tasks in queue', stringify(this.pendingTasks, null, ' '));
+    log('Cooldown: ', this.cooldown,' Tasks in queue', stringify(this.pendingTasks, null, '\t'));
     var task = _.chain(this.pendingTasks).filter(function (task) {
         return task.requests.length > 0 && task.requests[0][4] !== REQUEST_IN_FLY;
     }).min(function (task) {
@@ -89,7 +87,6 @@ Queue.prototype.drain = function() {
 };
 
 Queue.prototype.submit = function(method, args) {
-    if (!this.timer) this.schedule(this.cooldown || 100);
     if (method === 'evaluate' || method === 'guess') {
         var taskId = args[0];
         if (this.completedTasks[taskId]) return; // ignore submissions for completed tsks
@@ -124,7 +121,7 @@ Queue.prototype.resubmit = function(task, request) {
 
 Queue.prototype._wrap = function(api) {
     var methods = {};
-    ['problems', 'train', 'evaluate', 'guess'].forEach(function (key) {
+    ['myproblems', 'train', 'evaluate', 'guess'].forEach(function (key) {
         methods[key] = api[key];
         api[key] = function () {
             var args = Array.prototype.splice.call(arguments, 0, arguments.length);
@@ -183,7 +180,6 @@ function respond(method) { /* follows by top function arguments */
             log('===================ERRROR==============', e, e.stack);
             // too many requests?
             API.queue.resubmit(currentTask, currentRequest);
-            return;
         }
 
         API.queue.cooldown = DEFAULT_COOLDOWN;
