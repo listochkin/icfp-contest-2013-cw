@@ -1,8 +1,8 @@
 'use strict';
 
 var request = require('request'),
-    concat = require('concat-stream'),
-    _ = require('underscore');
+    _ = require('underscore'),
+    stringify = require('json-stringify-safe');
 
 var KEY = require('../src/key.js');
 
@@ -44,16 +44,23 @@ Queue.prototype.schedule = function(cooldown) {
     }.bind(this), cooldown || 50);
 };
 
+Queue.prototype.stop = function() {
+    clearTimeout(this.timer);
+};
+
 Queue.prototype.callNetwork = function() {
-    this.callingNetwork = true;
     var request = this.nextRequest;
+    if (request[5] && this.completedTasks[request[5]]) {
+        return;
+    }
+    this.callingNetwork = true;
     this.methods[request[0]].apply(API, request[1]);
 };
 
 Queue.prototype.drain = function() {
     if (this.callingNetwork) return;
     // old priority queries first
-    log('Tasks in queue', this.pendingTasks);
+    log('Cooldown: ', this.cooldown,' Tasks in queue', stringify(this.pendingTasks, null, '\t'));
     var task = _.chain(this.pendingTasks).filter(function (task) {
         return task.requests.length > 0 && task.requests[0][4] !== REQUEST_IN_FLY;
     }).min(function (task) {
@@ -90,17 +97,21 @@ Queue.prototype.submit = function(method, args) {
                 requests: []
             };
         }
-        this.pendingTasks[taskId].requests.push([method, args, _.uniqueId('r'), 0, REQUEST_PENDING]);
+        this.pendingTasks[taskId].requests.push([method, args, _.uniqueId('r'), 0, REQUEST_PENDING, taskId]);
     } else {
-        this.other.push([method, args, _.uniqueId('r'), 0]);
+        this.other.push([method, args, _.uniqueId('r'), 0, null]);
     }
 };
 
 Queue.prototype.resubmit = function(task, request) {
+    if (!task && request[5]) task = _(this.pendingTasks).find(function (t) {
+        return t.id === request[5];
+    });
     log('Resubmit: ', task, request);
-    if (task != null && this.pendingTasks[task.id] != null) {
+    if (task && task.terminated) return;
+    if (task && !this.completedTasks[task.id]) {
         this.pendingTasks[task.id].requests.unshift(request);
-    } else {
+    } else if (!request[5]){
         this.other.unshift(request)
     }
     request[3] += 1;
@@ -110,32 +121,34 @@ Queue.prototype.resubmit = function(task, request) {
 
 Queue.prototype._wrap = function(api) {
     var methods = {};
-    for (var key in api) {
-        if (api[key] instanceof Function) {
-            (function (key) {
-                methods[key] = api[key];
-                api[key] = function () {
-                    var args = Array.prototype.splice.call(arguments, 0, arguments.length);
-                    log('Submitting: ', key, args);
-                    this.submit(key, args);
-                }.bind(this);
-            }).call(this, key);
-        }
-    }
+    ['myproblems', 'train', 'evaluate', 'guess'].forEach(function (key) {
+        methods[key] = api[key];
+        api[key] = function () {
+            var args = Array.prototype.splice.call(arguments, 0, arguments.length);
+            log('Submitting: ', key, args);
+            this.submit(key, args);
+        }.bind(this);
+    }, this);
     return methods; 
 };
 
 Queue.prototype.terminate = function(task) {
-    var pending = _(this.pendingTasks).find(function (t) {
+    if (!task) return;
+
+    var toRemove = _(this.pendingTasks).find(function (t) {
         return t.id == task.id;
     });
 
-    if (pending) {
-        pending.task = task;
-        pending.terminated = new Date();
+    if (toRemove) {
+        toRemove.task = task;
+        toRemove.terminated = new Date();
 
-        this.completedTasks[pending.id] = pending;
-        delete this.pendingTasks[pending.id];
+        this.completedTasks[toRemove.id] = toRemove;
+        var newPending = {};
+        Object.keys(this.pendingTasks).forEach(function (key) {
+            if (key !== toRemove.id) newPending[key] = this.pendingTasks[key]; 
+        }, this);
+        this.pendingTasks = newPending;
     }
 };
 
@@ -144,22 +157,35 @@ function respond(method) { /* follows by top function arguments */
         currentTask = API.queue.nextTask,
         currentRequest = API.queue.nextRequest;
 
-    return function (body) {
+    return function (error, res, body) {
         log('Network call:', args);
+        log('Responce code: ', res.statusCode);
         API.queue.callingNetwork = false;
-        try {
-            log('Responce: ', body.toString());
-            body = JSON.parse(body.toString());
 
-            API.queue.cooldown = DEFAULT_COOLDOWN;
+        if (res.statusCode === 412 || res.statusCode === 410) {
+            API.queue.terminate(currentTask);
+            return;
+        }
 
-            var callback = args[args.length - 1];
-            callback(body);
-        } catch (e) {
-            log('===================ERRROR==============', e, e.stack);
+        if (res.statusCode === 429 || body === 'Too many requests') {
             // too many requests
             API.queue.resubmit(currentTask, currentRequest);
+            return;
         }
+
+        try {
+            log('Responce: ', stringify(body));
+            body = JSON.parse(stringify(body));
+        } catch (e) {
+            log('===================ERRROR==============', e, e.stack);
+            // too many requests?
+            API.queue.resubmit(currentTask, currentRequest);
+        }
+
+        API.queue.cooldown = DEFAULT_COOLDOWN;
+
+        var callback = args[args.length - 1];
+        callback(body);
     }
 }
 
@@ -167,16 +193,16 @@ function respond(method) { /* follows by top function arguments */
 var API = {
     LOG_API_CALLS: false,
 
-    problems: function problems(callback) {
-        request(url('myproblems')).pipe(concat(respond('problems', callback)));
+    problems: function (callback) {
+        request(url('myproblems'), respond('problems', callback));
     },
 
-    train: function train(size, operators, callback) {
+    train: function (size, operators, callback) {
         request({
             url: url('train'),
             method: 'POST',
             json: { size: size, operators: operators || []}
-        }).pipe(concat(respond('train', size, operators, callback)));
+        }, respond('train', size, operators, callback));
     },
 
     evaluate: function (id, program, args, callback) {
@@ -190,7 +216,7 @@ var API = {
         else
             msg.json['arguments'] = args;
 
-        request(msg).pipe(concat(respond('evaluate', id, program, args, callback)));
+        request(msg, respond('evaluate', id, program, args, callback));
     },
 
     guess: function (id, program, callback) {
@@ -198,7 +224,7 @@ var API = {
             url: url('guess'),
             method: 'POST',
             json: { id: id, program: program }
-        }).pipe(concat(respond('guess', id, program, callback)));
+        }, respond('guess', id, program, callback));
     }
 };
 
