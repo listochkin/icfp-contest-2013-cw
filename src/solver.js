@@ -22,7 +22,6 @@ function Solver(task) {
 
     this.programHoles;
     this.program;
-
 }
 
 Solver.prototype.addConstraint = function (constraints) {
@@ -148,7 +147,18 @@ Solver.prototype.solveGuessLoop = function(cb1) {
 
 }
 
-Solver.prototype.start = function() {
+Solver.prototype.start = function(task, callback) {
+
+    if (arguments.length === 0) {
+        callback = function () {};
+    } else if (arguments.length === 1) {
+        if (task instanceof Function) {
+            callback = task;
+            task = null;
+        }
+    }
+
+    if (task) this.task = task;
 
     var that = this;
 
@@ -162,10 +172,13 @@ Solver.prototype.start = function() {
         },
 
         that.solveGuessLoop.bind(that)
-    ]);
+    ], function () {
+        that.stop();
+        callback(that);
+    });
 
 }
 
 Solver.prototype.stop = function() {
-    //this.z3.kill();
+    this.z3.kill();
 }
