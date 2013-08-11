@@ -122,6 +122,8 @@ Queue.prototype._wrap = function(api) {
 };
 
 Queue.prototype.terminate = function(task) {
+    if (!task) return;
+
     var pending = _(this.pendingTasks).find(function (t) {
         return t.id == task.id;
     });
