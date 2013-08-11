@@ -1,13 +1,13 @@
-12 --- fold,c,c,op2,op1,op2,c,c,c
-11 --- fold,c,c,op2,op2,op1,c,c,c
-5 --- fold,c,c,op2,op1,op1,op1,c,c
+13 --- fold,c,c,op2,op1,op2,c,c,c
+12 --- fold,c,c,op2,op2,op1,c,c,c
+6 --- fold,c,c,op2,op1,op1,op1,c,c
 4 --- fold,c,c,op2,if0,c,c,c,c
+4 --- fold,c,c,op2,op2,c,op1,c,c
 3 --- fold,c,c,op2,op2,c,c,op1,c
-3 --- fold,c,c,op2,op2,c,op1,c,c
-2 --- fold,c,c,op2,op1,c,op1,op1,c
+3 --- fold,c,c,op2,op1,c,op1,op1,c
 2 --- fold,c,c,op2,op1,op1,c,op1,c
 2 --- fold,c,c,if0,op1,c,op1,c,c
 1 --- fold,c,c,if0,c,c,op2,c,c
 1 --- fold,c,c,if0,op2,c,c,c,c
-Total count: 46
+Total count: 51
  ---------------- 

@@ -1,12 +1,17 @@
+4 --- fold,c,c,op2,op2,if0,op1,op2,op1,c,c,c,c,c,c
 3 --- fold,c,c,op1,op2,if0,op2,op2,op1,c,c,c,c,c,c
-3 --- fold,c,c,op2,op2,if0,op1,op2,op1,c,c,c,c,c,c
-2 --- fold,c,c,op2,op2,if0,op2,op2,c,c,c,c,c,c,c
+3 --- fold,c,c,op2,op2,if0,op2,op2,c,c,c,c,c,c,c
 2 --- fold,c,c,op1,op2,if0,op2,op1,op1,op1,c,c,c,c,c
-2 --- fold,c,c,op2,c,op1,if0,op2,op2,op1,c,c,c,c,c
 2 --- fold,c,c,op1,op1,op2,if0,op2,op1,op1,c,c,c,c,c
 2 --- fold,c,c,op2,op2,if0,op1,op1,op1,op1,c,c,c,c,c
-1 --- fold,c,c,op1,op1,if0,op2,op1,op2,op1,c,c,c,c,c
+2 --- fold,c,c,if0,c,if0,op2,op1,op1,op1,c,c,c,c,c
+2 --- fold,c,c,op2,c,op1,if0,op2,op2,op1,c,c,c,c,c
 1 --- fold,c,c,op1,op2,if0,op2,op1,op2,c,c,c,c,c,c
+1 --- fold,c,c,if0,op2,op2,op1,op2,c,op1,c,c,c,c,c
+1 --- fold,c,c,op2,op2,if0,op1,op1,c,op1,op1,c,c,c,c
+1 --- fold,c,c,if0,op2,op2,op2,op2,c,c,c,c,c,c,c
+1 --- fold,c,c,op2,op2,if0,op1,op1,op2,c,c,c,c,c,c
+1 --- fold,c,c,op1,op1,if0,op2,op1,op2,op1,c,c,c,c,c
 1 --- fold,c,c,op2,c,op1,if0,op2,op1,c,op2,c,c,c,c
 1 --- fold,c,c,op2,c,op2,if0,op1,op2,op1,c,c,c,c,c
 1 --- fold,c,c,op2,op1,if0,op2,op1,op1,c,c,c,op1,c,c
@@ -15,7 +20,6 @@
 1 --- fold,c,c,op2,if0,op2,op2,op1,c,op1,c,c,c,c,c
 1 --- fold,c,c,op1,if0,op1,op2,op1,op2,op1,c,c,c,c,c
 1 --- fold,c,c,op2,op1,if0,op2,op1,op2,c,c,c,c,c,c
-1 --- fold,c,c,op2,op2,if0,op1,op1,op2,c,c,c,c,c,c
 1 --- fold,c,c,op1,op1,op1,if0,op2,op1,op1,c,c,op1,c,c
 1 --- fold,c,c,op1,if0,op1,op2,op1,op1,op1,op1,c,c,c,c
 1 --- fold,c,c,op2,op2,if0,op1,op2,c,op1,c,c,c,c,c
@@ -24,7 +28,6 @@
 1 --- fold,c,c,op1,op1,op1,if0,op2,op1,c,op1,op1,c,c,c
 1 --- fold,c,c,if0,op2,op2,op1,op1,op1,c,op1,c,c,c,c
 1 --- fold,c,c,op2,op1,if0,op2,op1,op1,op1,c,c,c,c,c
-1 --- fold,c,c,if0,c,if0,op2,op1,op1,op1,c,c,c,c,c
 1 --- fold,c,c,op2,op1,if0,op2,op2,c,op1,c,c,c,c,c
 1 --- fold,c,c,op1,op1,if0,op2,op1,op1,c,op1,op1,c,c,c
 1 --- fold,c,c,op1,op2,if0,op2,op1,op1,c,op1,c,c,c,c
@@ -33,5 +36,5 @@
 1 --- fold,c,c,if0,op2,op2,op1,op1,op2,c,c,c,c,c,c
 1 --- fold,c,c,op1,op1,op2,if0,op1,op1,c,op2,c,c,c,c
 1 --- fold,c,c,op2,c,op2,if0,op2,c,op2,c,c,c,c,c
-Total count: 44
+Total count: 50
  ---------------- 

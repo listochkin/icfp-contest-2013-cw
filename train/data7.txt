@@ -1,12 +1,12 @@
 31 --- op2,op2,op1,c,c,c
-12 --- op2,op1,op2,c,c,c
-9 --- op2,op1,op1,op1,c,c
+13 --- op2,op1,op2,c,c,c
+10 --- op2,op1,op1,op1,c,c
 8 --- op2,op2,c,op1,c,c
-7 --- op2,op1,op1,c,op1,c
+8 --- op2,op1,op1,c,op1,c
 4 --- op2,op2,c,c,op1,c
 3 --- op2,op1,c,op2,c,c
 3 --- op2,op1,c,op1,op1,c
 1 --- if0,c,op1,c,op1,c
 1 --- op2,if0,c,c,c,c
-Total count: 79
+Total count: 82
  ---------------- 

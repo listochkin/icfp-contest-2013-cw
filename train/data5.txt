@@ -1,6 +1,6 @@
 28 --- op2,op1,c,c
-22 --- op1,op2,c,c
-18 --- op1,op1,op1,c
+23 --- op1,op2,c,c
+19 --- op1,op1,op1,c
 10 --- op2,c,op1,c
-Total count: 78
+Total count: 80
  ---------------- 

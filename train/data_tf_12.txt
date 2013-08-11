@@ -1,15 +1,17 @@
 5 --- fold,c,c,op2,op1,op1,op2,c,c,c
-4 --- fold,c,c,op2,op2,op1,op1,c,c,c
-4 --- fold,c,c,op2,op1,op2,c,op1,c,c
-4 --- fold,c,c,op2,if0,op1,c,c,c,c
+5 --- fold,c,c,op2,op1,op2,c,op1,c,c
+5 --- fold,c,c,op2,op2,op1,op1,c,c,c
 4 --- fold,c,c,op2,op1,op2,op1,c,c,c
+4 --- fold,c,c,op2,if0,op1,c,c,c,c
+4 --- fold,c,c,if0,op1,op2,c,c,c,c
 3 --- fold,c,c,if0,op2,c,op1,c,c,c
 3 --- fold,c,c,if0,op2,op1,c,c,c,c
 3 --- fold,c,c,op2,op2,c,op1,op1,c,c
-3 --- fold,c,c,if0,op1,op2,c,c,c,c
+3 --- fold,c,c,op2,op2,c,op2,c,c,c
 2 --- fold,c,c,op2,op1,if0,c,c,c,c
 2 --- fold,c,c,op2,op1,op1,op1,op1,c,c
-2 --- fold,c,c,op2,op2,c,op2,c,c,c
+2 --- fold,c,c,op2,op1,op1,op1,c,op1,c
+1 --- fold,c,c,if0,op1,c,c,op2,c,c
 1 --- fold,c,c,if0,op1,c,op1,op1,c,c
 1 --- fold,c,c,if0,op1,op1,c,c,op1,c
 1 --- fold,c,c,op2,op1,op1,c,op1,op1,c
@@ -20,6 +22,5 @@
 1 --- fold,c,c,if0,op1,op1,op1,c,c,c
 1 --- fold,c,c,op2,op1,op1,c,op2,c,c
 1 --- fold,c,c,op2,if0,c,op1,c,c,c
-1 --- fold,c,c,op2,op1,op1,op1,c,op1,c
-Total count: 50
+Total count: 56
  ---------------- 

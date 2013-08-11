@@ -1,13 +1,15 @@
+15 --- op2,if0,op2,op2,op1,c,c,c,c,c,c
 14 --- op1,op1,if0,op2,op2,op1,c,c,c,c,c
-14 --- op2,if0,op2,op2,op1,c,c,c,c,c,c
 8 --- op1,op1,if0,op2,op1,op2,c,c,c,c,c
 6 --- op1,op2,if0,op2,op2,c,c,c,c,c,c
+6 --- op2,if0,op2,op1,op1,op1,c,c,c,c,c
 5 --- op2,if0,op2,op1,op2,c,c,c,c,c,c
-5 --- op2,if0,op2,op1,op1,op1,c,c,c,c,c
 3 --- op2,if0,op2,op1,op1,c,op1,c,c,c,c
 3 --- op1,op2,if0,op1,op2,op1,c,c,c,c,c
 3 --- op1,op2,if0,op1,op2,c,op1,c,c,c,c
 2 --- op1,op2,if0,op1,op1,op1,op1,c,c,c,c
+2 --- op1,op1,if0,op2,op2,c,op1,c,c,c,c
+1 --- op1,op2,if0,op2,op1,c,op1,c,c,c,c
 1 --- op1,op1,if0,op2,op1,c,op2,c,c,c,c
 1 --- op1,op2,if0,op2,op1,c,c,op1,c,c,c
 1 --- op1,op2,if0,op2,op1,op1,c,c,c,c,c
@@ -21,12 +23,11 @@
 1 --- op1,op2,if0,op2,c,op1,c,op1,c,c,c
 1 --- op1,op1,if0,op2,op1,c,op1,op1,c,c,c
 1 --- op1,op2,if0,op1,op1,c,op2,c,c,c,c
-1 --- op1,op1,if0,op2,op2,c,op1,c,c,c,c
 1 --- if0,op1,op2,op2,c,op1,op1,c,c,c,c
 1 --- op1,op2,if0,op2,c,op1,op1,c,c,c,c
 1 --- op2,if0,op2,op1,op1,c,c,c,op1,c,c
 1 --- op2,if0,op2,op2,c,c,op1,c,c,c,c
 1 --- op1,op2,if0,op2,c,op2,c,c,c,c,c
 1 --- op2,if0,op2,op1,c,op2,c,c,c,c,c
-Total count: 83
+Total count: 87
  ---------------- 
