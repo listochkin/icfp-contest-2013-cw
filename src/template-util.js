@@ -11,7 +11,7 @@ hole {
 var Lparse = require('LISP.js').parse;
 
 
-function toProgram(template, variables) {
+function toProgram(template, variables, operators) {
     var index = 0;
 
     var mapper = function mapTemplate(template) {
@@ -22,11 +22,25 @@ function toProgram(template, variables) {
             template === 'op2' ||
             template === 'c' ) {
 
-            var v = variables[index] ||
-                (template === 'op1' && 'not') ||
-                (template === 'op2' && 'and') ||
-                (template === 'c' && '0');
-
+            var v = variables[index];
+            
+            if(!v) {
+                for (var i = 0; i < operators.length; i++) {
+                    if (template === 'op1' && (operators[i] === 'not' || operators[i] === 'shl1' || operators[i] === 'shr1' || operators[i] === 'shr4' || operators[i] === 'shr16')) {
+                        v = operators[i];
+                        break;
+                    }                    
+                    if (template === 'op2' && (operators[i] === 'and' || operators[i] === 'or' || operators[i] === 'xor' || operators[i] === 'plus')) {
+                        v = operators[i];
+                        break;
+                    }
+                    if (template === 'c') {
+                        v = '0';
+                        break;
+                    }
+                }
+            }
+            
             index += 1;
             return v;
         }

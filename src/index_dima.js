@@ -8,15 +8,18 @@ var templateUtil = require('../src/template-util.js');
 
 var task;
 
-//api.train(9, [], function (problem) {
-//        console.log(problem);
-//});
+/*
+api.train(30, [], function (problem) {
+        console.log(problem);
+});
+*/
 
-task = { id: 'oxpgBQGTe4481PNayloSTmWJ',
-    size: 9,
-    operators: [ 'and', 'if0', 'shr4' ],
-    challenge: '(lambda (x_8450) (if0 (and (shr4 (shr4 x_8450)) 1) x_8450 0))' };
-
+task = { id: '35qJL2ivaMnl0cQVbBcf6Y4q',
+  size: 30,
+  operators: [ 'and', 'if0', 'not', 'plus', 'shl1', 'shr1', 'shr16', 'shr4', 'xor' ],
+  challenge: '(lambda (x_48485) (shr1 (if0 (shr1 (plus x_48485 (shr1 x_48485))) (plus (shl1 (not (shr16 (plus (shr4 (xor (shr1 (if0 (and (shl1 (shr1 1)) x_48485) (xor x_48485 0) 1)) 1)) x_48485)))) 0) x_48485)))' };
+  
+//(lambda (x) (and x (plus x (plus x (xor x (plus x (or x (xor 1 (or 1 (and x (xor x (plus x (plus 1 (shr4 (if0 1 1 x)))))))))))))))
 //task = {
 //    id: 'hkrI7Vc4Wm0I4E6wzAF4e00W',
 //    size: 8,

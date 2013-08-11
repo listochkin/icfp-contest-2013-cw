@@ -88,6 +88,8 @@ function translate_template(template, operators) {
     var op2sync = '';
     var op1any = '';
     var op2any = '';
+    var op1num = 0;
+    var op2num = 0;
     
     operators.map(function(x) {
         switch(x)
@@ -103,6 +105,7 @@ function translate_template(template, operators) {
                 op1syn += '(if (= h NOT) (z_not v) ';
                 op1sync += ')';
                 op1any = '(z_not v)';
+                op1num++;
                 isOp1 = true;
                 break;
             case 'shl1':
@@ -116,6 +119,7 @@ function translate_template(template, operators) {
                 op1syn += '(if (= h SHL1) (z_shl1 v) ';
                 op1sync += ')';
                 op1any = '(z_shl1 v)';
+                op1num++;
                 isOp1 = true;
                 break;
             case 'shr1':
@@ -129,6 +133,7 @@ function translate_template(template, operators) {
                 op1syn += '(if (= h SHR1) (z_shr1 v) ';
                 op1sync += ')';
                 op1any = '(z_shr1 v)';
+                op1num++;
                 isOp1 = true;
                 break;
             case 'shr4':
@@ -142,6 +147,7 @@ function translate_template(template, operators) {
                 op1syn += '(if (= h SHR4) (z_shr4 v) ';
                 op1sync += ')';
                 op1any = '(z_shr4 v)';
+                op1num++;
                 isOp1 = true;
                 break;
             case 'shr16':
@@ -155,6 +161,7 @@ function translate_template(template, operators) {
                 op1syn += '(if (= h SHR16) (z_shr16 v) ';
                 op1sync += ')';
                 op1any = '(z_shr16 v)';
+                op1num++;
                 isOp1 = true;
                 break;
             case 'and':
@@ -168,6 +175,7 @@ function translate_template(template, operators) {
                 op2syn += '(if (= h AND) (z_and v1 v2) ';
                 op2sync += ')';
                 op2any = '(z_and v1 v2)';
+                op2num++;
                 isOp2 = true;
                 break;
             case 'or':
@@ -180,6 +188,7 @@ function translate_template(template, operators) {
                 op2syn += '(if (= h OR) (z_or v1 v2) ';
                 op2sync += ')';
                 op2any = '(z_or v1 v2)';
+                op2num++;
                 isOp2 = true;
                 break;
             case 'xor':
@@ -193,6 +202,7 @@ function translate_template(template, operators) {
                 op2syn += '(if (= h XOR) (z_xor v1 v2) ';
                 op2sync += ')';
                 op2any = '(z_xor v1 v2)';
+                op2num++;
                 isOp2 = true;
                 break;
             case 'plus':
@@ -206,6 +216,7 @@ function translate_template(template, operators) {
                 op2syn += '(if (= h PLUS) (z_plus v1 v2) ';
                 op2sync += ')';
                 op2any = '(z_plus v1 v2)';
+                op2num++;
                 isOp2 = true;
                 break;
             case 'if0':
@@ -231,12 +242,10 @@ function translate_template(template, operators) {
 \n\
 (declare-datatypes () ((Op0Type C0 C1 VAR)))\n';
     if(isOp1) {
-        bootstrap += '(declare-datatypes () ((Op1Type '+op1type+' DUMMY1)))\n';
-        ops += '(define-fun z_dummy1 ((x Val)) Val (_ bv0 64) )\n';
+        bootstrap += '(declare-datatypes () ((Op1Type '+op1type+' )))\n';        
     }
     if(isOp2) {
-        bootstrap += '(declare-datatypes () ((Op2Type '+op2type+' DUMMY2)))\n';
-        ops += '(define-fun z_dummy2 ((x Val) (y Val)) Val (_ bv0 64) )\n';
+        bootstrap += '(declare-datatypes () ((Op2Type '+op2type+' )))\n';        
     }
     if(isFold)
         bootstrap += '(declare-datatypes () ((Op0TypeFold C0F C1F V1 V2 V3)))\n';
@@ -267,11 +276,11 @@ function translate_template(template, operators) {
         
     if (isOp1)
         bootstrap += '\n\
-(define-fun synth_op1 ((h Op1Type)(v Val)) Val\n ' + op1syn + '(z_dummy1 v)' + op1sync +')\n\n';
+(define-fun synth_op1 ((h Op1Type)(v Val)) Val\n ' + op1syn + op1any + op1sync +')\n\n';
         
     if (isOp2)
         bootstrap += '\n\
-(define-fun synth_op2 ((h Op2Type)(v1 Val)(v2 Val)) Val\n\ ' + op2syn + '(z_dummy2 v1 v2)' + op2sync +')\n\n';
+(define-fun synth_op2 ((h Op2Type)(v1 Val)(v2 Val)) Val\n\ ' + op2syn + op2any + op2sync +')\n\n';
 
     var smt2 = bootstrap;
     

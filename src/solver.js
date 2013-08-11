@@ -79,7 +79,7 @@ Solver.prototype.callZ3 = function(callback) {
                 this.programHoles = templateUtil.extractVariables(response);
                 console.log(this.programHoles);
 
-                this.program = templateUtil.toProgram(this.template, this.programHoles)
+                this.program = templateUtil.toProgram(this.template, this.programHoles, this.task.operators)
                 console.log(expr_str(this.program));
                 this.z3program = '';
                 callback(null);
@@ -158,7 +158,7 @@ Solver.prototype.start = function() {
 
     async.series([
         function(callback) {
-            that.evaluate(['0x0000000000000000', '0x0000000000000002'], callback);
+            that.evaluate(['0xFE5645A7867867B3', '0x45FE35AB35041CD2'], callback);
         },
 
         that.solveGuessLoop.bind(that)
