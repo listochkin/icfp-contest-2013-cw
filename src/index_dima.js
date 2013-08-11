@@ -24,11 +24,11 @@ function solve_problem_train() {
     
         //solve_problem(p - 1);
     
-        var solver = new Solver(problem); 
-        solver.start(function () {
-            console.log('START.CALLBACK '); 
-            solve_problem_train();
-        });
+//        var solver = new Solver(problem);
+//        solver.start(function () {
+//            console.log('START.CALLBACK ');
+//            solve_problem_train();
+//        });
     });
 }
 solve_problem_train();
