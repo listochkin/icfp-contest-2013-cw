@@ -11,7 +11,7 @@ function most_wanted(size,templates,threshold_percentage){
     for(var j = 0; j < templates.length; j++){
         if(((templates[j].count*100)/total_count) > threshold_percentage){
             res.push(templates[j]);
-            console.log(templates[j].count+' --- '+templates[j].template_str);
+            //.log(templates[j].count+' --- '+templates[j].template_str);
         }
     }
     return res;
@@ -76,7 +76,7 @@ function get_lisp_format(arr, use_fold){
                         ((res_arr[i+3] == 'c') || (typeof res_arr[i+3] == "object"))
                         ){
                         var part_arr = ['fold', 'x1', '0', ['lambda', ['x1', 'x2'], res_arr[i+3]]];
-                        console.log(part_arr);
+                        //console.log(part_arr);
                         res_arr[i] = part_arr;
                         res_arr.splice(i+1,3);
                         count++;
@@ -95,7 +95,7 @@ function get_lisp_format(arr, use_fold){
                         ((res_arr[i+3] == 'c') || (typeof res_arr[i+3] == "object"))
                         ){
                         var part_arr = ['fold', res_arr[i+1], res_arr[i+2], ['lambda', ['x2', 'x3'], res_arr[i+3]]];;
-                        console.log(part_arr);
+                        //console.log(part_arr);
                         res_arr[i] = part_arr;
                         res_arr.splice(i+1,3);
                         count++;
@@ -107,7 +107,8 @@ function get_lisp_format(arr, use_fold){
         //var start_arr = ['lambda', 'x'];
     }
     while(total_count)
-    res_arr.splice(0,0,'lambda', 'x');
+    var x = ['x'];
+    res_arr.splice(0,0,'lambda', x);
     return res_arr;
 }
 
@@ -125,7 +126,7 @@ function get_templates(size,templates,use_fold){
     if(fs.existsSync(filename)) {
         var data = fs.readFileSync(filename);
 
-        console.log(data.toString());
+        //console.log(data.toString());
         var file_text = data.toString();
         var file_arr=file_text.split("\n");
         var s='';
@@ -138,16 +139,18 @@ function get_templates(size,templates,use_fold){
                 var template = {count: parseInt(sub_str[0]), template_str: sub_str[1], template_arr: temp_arr, lisp_arr: get_lisp_format(temp_arr, use_fold) };
                 templates.push(template);
                 //console.log(template.count);
-                console.log(template.template_str);
+                //console.log(template.template_str);
                 //console.log(template.template_arr);
-                console.log(template.lisp_arr);
+                //console.log(template.lisp_arr);
             }
         }
     }
     return templates;
 }
 
-
+function reset_template(){
+    store_templates.size = 0;
+}
 
 function get_next_template(size, use_fold){
 
@@ -174,6 +177,6 @@ function get_next_template(size, use_fold){
 
 module.exports = {
     get_templates: get_templates,
-    get_next_template: get_next_template
-
+    get_next_template: get_next_template,
+    reset_template: reset_template
 }
