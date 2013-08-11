@@ -66,7 +66,16 @@ function solve_problem(p) {
 
 } 
 
- 
+var problems = null; 
+var _ = require('underscore'), fs = require('fs'), path = require('path'); 
+var problemsFile = path.join(__dirname, '../problems.json');
+
+api.problems(function (body) {
+    console.log("1"); 
+});
+
+
+/* 
 var problems = null; 
 var _ = require('underscore'), fs = require('fs'), path = require('path'); 
 var problemsFile = path.join(__dirname, '../problems.json');
