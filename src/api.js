@@ -179,7 +179,7 @@ function respond(method) { /* follows by top function arguments */
 
 
 var API = {
-    LOG_API_CALLS: true,
+    LOG_API_CALLS: false,
 
     problems: function (callback) {
         request(url('myproblems'), respond('problems', callback));
