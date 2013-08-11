@@ -37,10 +37,12 @@ module.exports = function(size,templates,use_fold){
 
                     if(reg.test(str[0])){
                         var sub_str = str.split(" --- ");
-                        var template = {count: parseInt(sub_str[0]), template_str: sub_str[1]};
+                        var temp_arr = sub_str[1].split(",");
+                        var template = {count: parseInt(sub_str[0]), template_str: sub_str[1], template_arr: temp_arr };
                         templates.push(template);
                         console.log(template.count);
                         console.log(template.template_str);
+                        console.log(template.template_arr);
                     }
                 }
             });
