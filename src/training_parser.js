@@ -17,7 +17,7 @@ function most_wanted(size,templates,threshold_percentage){
     return res;
 }
 
-function get_lisp_format(arr){
+function get_lisp_format(arr, use_fold){
     var res_arr = arr;
 
     do {
@@ -65,6 +65,26 @@ function get_lisp_format(arr){
             }
         }
         while(count > 0)
+
+        if(use_fold == "tfold")
+            do {
+                count = 0;
+                for(var i = (res_arr.length -3); i >= 0; i--){
+                    if((res_arr[i] == "fold") &&
+                        ((res_arr[i+1] == 'c') || (typeof res_arr[i+1] == "object")) &&
+                        ((res_arr[i+2] == 'c') || (typeof res_arr[i+2] == "object")) &&
+                        ((res_arr[i+3] == 'c') || (typeof res_arr[i+3] == "object"))
+                        ){
+                        var part_arr = ['fold', 'x1', '0', ['lambda', ['x1', 'x2'], res_arr[i+3]]];
+                        console.log(part_arr);
+                        res_arr[i] = part_arr;
+                        res_arr.splice(i+1,3);
+                        count++;
+                        total_count++;
+                    }
+                }
+            }
+            while(count > 0)
         //var start_arr = ['lambda', 'x'];
     }
     while(total_count)
@@ -85,6 +105,7 @@ function get_templates(size,templates,use_fold){
     var filename = '../train/data'+suffix+size +'.txt';
 
     var data = fs.readFileSync(filename);
+
     console.log(data.toString());
     var file_text = data.toString();
     var file_arr=file_text.split("\n");
@@ -95,10 +116,10 @@ function get_templates(size,templates,use_fold){
         if(reg.test(str[0])){
             var sub_str = str.split(" --- ");
             var temp_arr = sub_str[1].split(",");
-            var template = {count: parseInt(sub_str[0]), template_str: sub_str[1], template_arr: temp_arr, lisp_arr: get_lisp_format(temp_arr) };
+            var template = {count: parseInt(sub_str[0]), template_str: sub_str[1], template_arr: temp_arr, lisp_arr: get_lisp_format(temp_arr, use_fold) };
             templates.push(template);
             //console.log(template.count);
-            //console.log(template.template_str);
+            console.log(template.template_str);
             //console.log(template.template_arr);
             console.log(template.lisp_arr);
         }
@@ -106,27 +127,13 @@ function get_templates(size,templates,use_fold){
     return templates;
 }
 
-function set_templates(size){
+
+
+function get_next_template(size, use_fold){
 
     if(store_templates.size != size){
         var templates = [];
-            templates = get_templates(size,[]);
-        console.log('i am here');
-        store_templates.size = size;
-        store_templates.templates = [];
-        for(var i = 0; i < templates.length; i++){
-            store_templates.templates.push(templates[i].lisp_arr);
-            console.log(templates[i].lisp_arr);
-        }
-    }
-    return store_templates.templates;
-}
-
-function get_next_template(size){
-
-    if(store_templates.size != size){
-        var templates = [];
-        templates = get_templates(size,[]);
+        templates = get_templates(size,[], use_fold);
         console.log('i am here');
 
         store_templates.size = size;
@@ -147,6 +154,6 @@ function get_next_template(size){
 
 module.exports = {
     get_templates: get_templates,
-    get_next_template: get_next_template,
-    set_templates: set_templates
+    get_next_template: get_next_template
+
 }
