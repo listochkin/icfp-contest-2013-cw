@@ -6,16 +6,44 @@ var Solver = require('../src/solver.js');
 var templateUtil = require('../src/template-util.js');
 
 global.problems_solved = 0;
+
+function solve_problem_train() {
+    api.train(7, [], function (problem) {
+        /*problem = { id: 'anwX0ykmLU2zmplwr9v8padw',
+  size: 7,
+  operators: [ 'plus', 'shl1', 'shr16', 'shr4' ],
+  challenge: '(lambda (x_6542) (plus (shl1 x_6542) (shr4 (shr16 x_6542))))' };
+  */
+  
+        console.log('solve_problem train ');
+        console.log(problem);        
+      
+        console.log('Solving... solved so far:' +(global.problems_solved++)); 
+    //          console.log(problems[p]); 
+    
+        //solve_problem(p - 1);
+    
+        var solver = new Solver(problem); 
+        solver.start(function () {
+            //console.log('START.CALLBACK '); 
+            solve_problem_train();
+        });
+    });
+}
+solve_problem_train();
+
 function solve_problem(p) {
-    //console.log('solve_problem ' + p);
+    console.log('solve_problem ' + p);
     if (p <= 0)
         return;
     
-    while(problems[p].size >= 6
+    while(problems[p].size >= 8
           || problems[p].operators.indexOf('fold') != -1
           || problems[p].operators.indexOf('tfold') != -1
           || problems[p].operators.indexOf('bonus') != -1
-          || problems[p].solved) {
+          || problems[p].solved
+          || (problems[p].solved === false && !problems[p].timeLeft)) {
+        console.log('skipping '+p);
         p--;
         if (p <= 0)
             return;
@@ -40,6 +68,7 @@ var problems = null;
 var _ = require('underscore'), fs = require('fs'), path = require('path'); 
 var problemsFile = path.join(__dirname, '../problems.json');
 
+/*
 api.problems(function (body) { 
     problems = _.sortBy(body, function (p) { 
         return p.size; 
@@ -49,7 +78,8 @@ api.problems(function (body) {
 //  console.log(problems); 
   
     solve_problem(problems.length - 1); 
-}); 
+});
+*/
 
 //var task;
 

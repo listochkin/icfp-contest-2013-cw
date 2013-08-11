@@ -49,25 +49,34 @@ function next_op2(len, crumbs) {
     }
 
     e1 = next_expression(e1_len, crumbs && crumbs[1]);
-    if (e1) {
+    if (e1) {        
+        
         e2 = next_expression(len - e1_len - 1);
         return ['op2', e1, e2];
     }
 
     e1_len += 1;
+    
+    //console.log('op2 here ' + e1_len);
 
     if (e1_len > (len - 1) / 2)
         return null;
-
-    e1 = next_expression(e1_len, crumbs && crumbs[1]);
+    
+    //console.log('op2 here2 ' + e1_len + ' ' + crumbs && crumbs[1] );
+        
+    
+    e1 = next_expression(e1_len, crumbs && crumbs[0]);
     if (!e1)
-        return null;
+        return null;    
+    
+    //console.log('op2 here3 ' + e1_len);
 
     e2 = next_expression(len - e1_len - 1);
     
     return ['op2', e1, e2];
 
 }
+
 
 function next_ternary_expression(len, crumbs, operator, operator_len) {
     var e1, e2, e3, e1_len, e2_len;
@@ -214,7 +223,7 @@ function next_expression(len, current, options) {
 function next_program(len, current, operators) {
     
     if(typeof(operators) === 'undefined')
-        operators = [ 'xor', 'plus', 'and', 'or', 'not', 'shl1', 'shr1', 'shr16', 'shr4', 'fold', 'if0' ];
+        operators = [ 'xor', 'plus', 'and', 'or', 'not', 'shl1', 'shr1', 'shr16', 'shr4'/*, 'fold', 'if0' */];
         
     var isOp1 = false;
     var isOp2 = false;

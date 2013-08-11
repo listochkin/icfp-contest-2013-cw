@@ -9,10 +9,17 @@ var Z3 = require('../src/z3.js');
 var templateUtil = require('../src/template-util.js');
 var Lparse = require('LISP.js').parse;
 
-/*
+var buggy =
+{ id: 'anwX0ykmLU2zmplwr9v8padw',
+  size: 7,
+  operators: [ 'plus', 'shl1', 'shr16', 'shr4' ],
+  challenge: '(lambda (x_6542) (plus (shl1 x_6542) (shr4 (shr16 x_6542))))' };
+
+// '(lambda (x1) (op2 (op1 x) (op1 (op1 x))))'
+
 var expr;
 for (var i = 0; i < 100; i++) {
-    expr = generator.next_program(30, expr);
+    expr = generator.next_program(8, expr/*, [ 'plus', 'shl1', 'shr16', 'shr4' ]*/);
     console.log(expr_str(expr));
     if (!expr)
         break;
@@ -33,7 +40,7 @@ function Solver(task) {
 //console.log(expr_str(expr));
 
 //var operators = [ 'and', 'if0', 'or', 'shl1', 'shr1', 'shr16', 'shr4', 'xor' ];
-
+/*
 api.train(15, [], function (train) {
         console.log(train);
         

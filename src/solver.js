@@ -103,6 +103,7 @@ Solver.prototype.nextTemplate = function(check_sat) {
     if (!this.template) {
         this.z3sat = true;
         this.z3program = '';
+        console.log('NO TEMPLATE FOUND');
         return;
     }
 
