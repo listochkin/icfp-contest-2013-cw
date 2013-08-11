@@ -41,7 +41,7 @@ Queue.prototype.schedule = function(cooldown) {
     this.timer = setTimeout(function() {
         this.drain();
         this.schedule(this.cooldown);
-    }.bind(this), cooldown || 50).unref();
+    }.bind(this), cooldown || 50);//.unref();
 };
 
 Queue.prototype.callNetwork = function() {
@@ -59,8 +59,8 @@ Queue.prototype.drain = function() {
     var task = _.chain(this.pendingTasks).filter(function (task) {
         return task.requests.length > 0 && task.requests[0][4] !== REQUEST_IN_FLY;
     }).min(function (task) {
-        return task.time;
-    }).value();
+            return task.time;
+        }).value();
     if (task instanceof Object) {
         this.nextTask = task;
         this.nextRequest = task.requests.shift();
@@ -122,13 +122,13 @@ Queue.prototype._wrap = function(api) {
             this.submit(key, args);
         }.bind(this);
     }, this);
-    return methods; 
+    return methods;
 };
 
 Queue.prototype.terminate = function(task) {
     if (!task) return;
 
-    var pending = _(this.pendingTasks).find(function (t) {
+    var pending = _(this.pendingTasks).find(function (call) {
         return t.id == task.id;
     });
 
@@ -138,7 +138,7 @@ Queue.prototype.terminate = function(task) {
 
         this.completedTasks[pending.id] = pending;
         this.pendingTasks[pending.id] = {};
-        this.pendingTasks = _(this.pendingTasks).filter(function (t) {
+        this.pendingTasks = _(this.pendingTasks).filter(function (call) {
             return !!t['id'];
         });
     }

@@ -12,16 +12,18 @@ module.exports = Solver;
 function Solver(task) {
     this.task = task;
     this.constraints = [];
-//    this.pendingConstraints = [];
-    this.templateStatus = 'mismatch';
+
     this.template;
+
+    this.finish = false;
 
     this.z3;
     this.z3program;
-    this.z3sat = true;
 
     this.programHoles;
     this.program;
+
+    this.finalStatus = 'working';
 }
 
 Solver.prototype.addConstraint = function (constraints) {
@@ -46,7 +48,7 @@ Solver.prototype.evaluate = function (inputs, callback) {
 
 Solver.prototype.guess = function (callback) {
 
-    if (!this.z3sat || this.shouldTerminate()) {
+    if (this.finish || this.shouldTerminate()) {
         callback(null);
         return;
     }
@@ -54,14 +56,17 @@ Solver.prototype.guess = function (callback) {
     api.guess(this.task.id, expr_str(this.program), function(response) {
         console.log(response.status);
 
-        this.templateStatus = response.status;
-
         if (response.status === 'mismatch') {
             // add response.values to pending constraints
             this.addConstraint([response.values[0], response.values[1]]);
             this.z3program += translator.translate_constraint16([[response.values[0], response.values[1]]]);
             this.z3program += translator.check_sat();
         }
+        else {
+            this.finish = true;
+            this.finalStatus = response.status;
+        }
+
         callback(null);
     }.bind(this));
 }
@@ -84,7 +89,7 @@ Solver.prototype.callZ3 = function(callback) {
             }.bind(this));
         }
         else {
-            console.log(response);
+            //console.log(response);
 
             this.nextTemplate(true);
 
@@ -100,13 +105,14 @@ Solver.prototype.callZ3 = function(callback) {
 Solver.prototype.nextTemplate = function(check_sat) {
     this.template = generator.next_program(this.task.size, this.template, this.task.operators);
     if (!this.template) {
-        this.z3sat = true;
+        this.finish = true;
         this.z3program = '';
+        this.finalStatus = 'no_template';
         console.log('NO TEMPLATE FOUND');
         return;
     }
 
-    console.log(expr_str(this.template));
+//    console.log(expr_str(this.template));
 
     this.z3program = '(reset)\n';
     this.z3program += translator.translate_template(this.template, this.task.operators);
@@ -120,8 +126,9 @@ Solver.prototype.solveGuessLoop = function(cb1) {
 
     async.whilst(
         function() {
-            if (!that.task) return false;
-            var ret = (that.templateStatus === 'mismatch') && that.z3sat;
+            if (!that.task || that.finish) return false;
+
+            var ret = that.template;
 //            console.log('Loop tested ' + ret + that.templateStatus);
             return ret;
         },
@@ -173,19 +180,19 @@ Solver.prototype.start = function(task, callback) {
         that.solveGuessLoop.bind(that)
     ], function () {
         that.stop();
-        callback(that);
+        callback(that.finalStatus);
     });
 
 }
 
 Solver.prototype.shouldTerminate = function () {
-    var should = !this.task || api.queue.completedTasks[this.task.id];
+    var should = !this.task;// || api.queue.completedTasks[this.task.id];
     if (should) this.terminate();
     return should;
 }
 
 Solver.prototype.terminate = function () {
-    api.queue.terminate(this.task);
+//    api.queue.terminate(this.task);
     this.task = null; // gracefull shotdown;
 };
 

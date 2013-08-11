@@ -227,7 +227,115 @@ function next_expression(len, current, options) {
 
 };
 
+var pool;
+pool = [
+    ["lambda",["x1"],["op1",["op1",["op1","c"]]]],
+    ["lambda",["x1"],["op2","c",["op1","c"]]],
+    ["lambda",["x1"],["op1",["op2","c","c"]]],
+    ["lambda",["x1"],["op1",["op1",["op1","c"]]]],
+    ["lambda",["x1"],["op2","c",["op1","c"]]],
+    ["lambda",["x1"],["op1",["op2","c","c"]]],
+
+    ["lambda",["x1"],["op1",["op1",["op1",["op1","c"]]]]],
+    ["lambda",["x1"],["op2","c",["op2","c","c"]]],
+    ["lambda",["x1"],["op2","c",["op1",["op1","c"]]]],
+    ["lambda",["x1"],["op2",["op1","c"],["op1","c"]]],
+    ["lambda",["x1"],["op1",["op2","c",["op1","c"]]]],
+    ["lambda",["x1"],["op1",["op1",["op2","c","c"]]]],
+    ["lambda",["x1"],["op1",["op1",["op1",["op1","c"]]]]],
+    ["lambda",["x1"],["op2","c",["op2","c","c"]]],
+    ["lambda",["x1"],["op2","c",["op1",["op1","c"]]]],
+    ["lambda",["x1"],["op2",["op1","c"],["op1","c"]]],
+    ["lambda",["x1"],["op1",["op2","c",["op1","c"]]]],
+    ["lambda",["x1"],["op1",["op1",["op2","c","c"]]]],
+
+    ["lambda",["x1"],["op1",["op1",["op1",["op1",["op1","c"]]]]]],
+    ["lambda",["x1"],["op2","c",["op2","c",["op1","c"]]]],
+    ["lambda",["x1"],["op2","c",["op1",["op2","c","c"]]]],
+    ["lambda",["x1"],["op2","c",["op1",["op1",["op1","c"]]]]],
+    ["lambda",["x1"],["op2",["op1","c"],["op2","c","c"]]],
+    ["lambda",["x1"],["op2",["op1","c"],["op1",["op1","c"]]]],
+    ["lambda",["x1"],["op1",["op2","c",["op2","c","c"]]]],
+    ["lambda",["x1"],["op1",["op2","c",["op1",["op1","c"]]]]],
+    ["lambda",["x1"],["op1",["op2",["op1","c"],["op1","c"]]]],
+    ["lambda",["x1"],["op1",["op1",["op2","c",["op1","c"]]]]],
+    ["lambda",["x1"],["op1",["op1",["op1",["op2","c","c"]]]]],
+    ["lambda",["x1"],["op1",["op1",["op1",["op1",["op1","c"]]]]]],
+    ["lambda",["x1"],["op2","c",["op2","c",["op1","c"]]]],
+    ["lambda",["x1"],["op2","c",["op1",["op2","c","c"]]]],
+    ["lambda",["x1"],["op2","c",["op1",["op1",["op1","c"]]]]],
+    ["lambda",["x1"],["op2",["op1","c"],["op2","c","c"]]],
+    ["lambda",["x1"],["op2",["op1","c"],["op1",["op1","c"]]]],
+    ["lambda",["x1"],["op1",["op2","c",["op2","c","c"]]]],
+    ["lambda",["x1"],["op1",["op2","c",["op1",["op1","c"]]]]],
+    ["lambda",["x1"],["op1",["op2",["op1","c"],["op1","c"]]]],
+    ["lambda",["x1"],["op1",["op1",["op2","c",["op1","c"]]]]],
+    ["lambda",["x1"],["op1",["op1",["op1",["op2","c","c"]]]]]
+];
+
+var globalSize = 0;
+var globalLen = 0;
+var globalCount = 0;
+
 function next_program(len, current, operators) {
+
+    if (!globalLen) {
+        globalLen = len;
+        globalSize = (len < 5) ? len : 5;
+        globalCount = 0;
+    }
+
+    if (globalCount >= 200) {
+        globalSize = 0;
+        globalLen = 0;
+        globalCount = 0;
+        return null;
+    }
+
+    var program = next_program_exact_size(globalSize, current, operators);
+
+    if (program) {
+        globalCount += 1;
+        return program;
+    }
+
+    globalSize += 1;
+
+    if (globalSize > globalLen)
+        return null;
+
+    program = next_program(globalSize, null, operators);
+    if (!program) {
+        globalSize = 0;
+        globalLen = 0;
+        globalCount = 0;
+        return null;
+    }
+
+    globalCount += 1;
+
+    return program;
+
+}
+
+
+function next_program_from_pool(len, current, operators) {
+
+    var index;
+
+    index = pool.indexOf(current) + 1;
+
+    return pool[index] || null;
+}
+
+var insider_parser = require('../src/training_parser.js');
+
+function next_program_insider(len, current, operators) {
+
+    insider_parser.get_next_template(len);
+}
+
+function next_program_exact_size(len, current, operators) {
     
     if(typeof(operators) === 'undefined')
         operators = [ 'xor', 'plus', 'and', 'or', 'not', 'shl1', 'shr1', 'shr16', 'shr4'/*, 'fold', 'if0' */];
@@ -290,17 +398,20 @@ function next_program(len, current, operators) {
                     {
                         case 'op1':                        
                             isGotOp1 = true;                            
-                            break
+                            break;
                         case 'op2':                        
                             isGotOp2 = true;
-                            break
+                            break;
                         case 'if0':
                             isGotIf = true;
                             ifCount += 1;
-                            break
+                            break;
                         case 'fold':
                             isGotFold = true;
-                            break
+                            break;
+//                        case 'c':
+//                            cCount += 1;
+//                            break;
                     }
                 }
             }
@@ -314,12 +425,13 @@ function next_program(len, current, operators) {
         var isGotOp2 = false;
         var isGotIf = false;
         var isGotFold = false;
-        var ifCount = 0
+        var ifCount = 0;
+        var cCount = 0;
 
         post_check(expression);
-    } while(expression && ((isIf && !isGotIf) || (isFold && !isGotFold) || (isOp1 && !isGotOp1) ||
-                           (isOp2 && !isGotOp2) || (!isOp1 && isGotOp1) || (!isOp2 && isGotOp2) ||
-                           (!isIf && isGotIf) || (!isFold && isGotFold) || (ifCount > 2)));
+    } while(expression && (/*(isIf && !isGotIf) ||*/ (isFold && !isGotFold) || /*(isOp1 && !isGotOp1) ||*/
+                           /*(isOp2 && !isGotOp2) ||*/ (!isOp1 && isGotOp1) || (!isOp2 && isGotOp2) ||
+                           (!isIf && isGotIf) || (!isFold && isGotFold) || (ifCount > 2) ));
     
     
     if (!expression)

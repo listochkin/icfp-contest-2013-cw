@@ -21,11 +21,13 @@ var start, end;
 //    console.log('====== SOLVED #' + global.problems_solved + " Time: " + (end - start));
 //});
 
+var result = {};
+
 
 function solve_problem_train() {
     console.log('solve_problem train ');
     
-    api.train(10, [], function (problem) {
+    api.train(15, [], function (problem) {
 //    problem = { id: 'anwX0ykmLU2zmplwr9v8padw',
 //  size: 7,
 //  operators: [ 'plus', 'shl1', 'shr16', 'shr4' ],
@@ -34,16 +36,20 @@ function solve_problem_train() {
         console.log('solve_problem train returned');
         console.log(problem);        
       
-    //    console.log('Solving... solved so far:' +(global.problems_solved++));
-    //          console.log(problems[p]); 
-    
-        //solve_problem(p - 1);
-
         start = new Date().getTime();
         var solver = new Solver(problem);
-        solver.start(function () {
+        solver.start(function (status) {
             end = new Date().getTime();
+
+            result[status] = (result[status] + 1) || 1;
+
             console.log('====== SOLVED #' + global.problems_solved + " Time: " + (end - start));
+            console.log('Stats: ');
+            console.log('          win: ' + result.win || 0);
+            console.log('        error: ' + result.error || 0);
+            console.log('  no template: ' + result.no_template || 0);
+            console.log('');
+
             solve_problem_train();
         });
     });
