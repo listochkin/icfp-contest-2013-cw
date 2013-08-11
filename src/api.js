@@ -41,13 +41,15 @@ Queue.prototype.schedule = function(cooldown) {
     this.timer = setTimeout(function() {
         this.drain();
         this.schedule(this.cooldown);
-    }.bind(this), cooldown || 50);
+    }.bind(this), cooldown || 50).unref();
 };
 
 Queue.prototype.callNetwork = function() {
     this.callingNetwork = true;
     var request = this.nextRequest;
     this.methods[request[0]].apply(API, request[1]);
+    this.nextTask = null;
+    this.nextRequest = null;
 };
 
 Queue.prototype.drain = function() {
@@ -80,6 +82,7 @@ Queue.prototype.drain = function() {
 };
 
 Queue.prototype.submit = function(method, args) {
+    if (!this.timer) this.schedule(this.cooldown || 100);
     if (method === 'evaluate' || method === 'guess') {
         var taskId = args[0];
         if (this.completedTasks[taskId]) return; // ignore submissions for completed tsks
@@ -97,6 +100,7 @@ Queue.prototype.submit = function(method, args) {
 };
 
 Queue.prototype.resubmit = function(task, request) {
+    if (!this.timer) this.schedule(this.cooldown || 100);
     log('Resubmit: ', task, request);
     if (task != null && this.pendingTasks[task.id] != null) {
         this.pendingTasks[task.id].requests.unshift(request);
