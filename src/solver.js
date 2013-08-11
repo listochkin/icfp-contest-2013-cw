@@ -12,7 +12,7 @@ module.exports = Solver;
 function Solver(task) {
     this.task = task;
     this.constraints = [];
-    this.pendingConstraints = [];
+//    this.pendingConstraints = [];
     this.templateStatus = 'mismatch';
     this.template;
 
@@ -26,7 +26,7 @@ function Solver(task) {
 
 Solver.prototype.addConstraint = function (constraints) {
     this.constraints.push(constraints);
-    this.pendingConstraints.push(constraints);
+//    this.pendingConstraints.push(constraints);
 }
 
 Solver.prototype.evaluate = function (inputs, callback) {
@@ -34,7 +34,7 @@ Solver.prototype.evaluate = function (inputs, callback) {
         var i;
         console.log('EVAL: ' + response.status + ', Outpus: ' + response.outputs);
 
-        pendingConstraints = [];
+//        pendingConstraints = [];
         for (i = 0; i < response.outputs.length; i += 1) {
             this.addConstraint([inputs[i], response.outputs[i]]);
         }
@@ -58,8 +58,8 @@ Solver.prototype.guess = function (callback) {
 
         if (response.status === 'mismatch') {
             // add response.values to pending constraints
-            this.pendingConstraints = [];
-            this.addConstraint([response.values[0], response.values[1]]);
+            //this.pendingConstraints = [];
+            //this.addConstraint([response.values[0], response.values[1]]);
             this.z3program += translator.translate_constraint16([[response.values[0], response.values[1]]]);
             this.z3program += translator.check_sat();
         }
@@ -168,7 +168,7 @@ Solver.prototype.start = function(task, callback) {
 
     async.series([
         function(callback) {
-            that.evaluate(['0xFE5645A7867867B3', '0x45FE35AB35041CD2'], callback);
+            that.evaluate(['0xFE5645A7867867B3'/*, '0x45FE35AB35041CD2'*/], callback);
         },
 
         that.solveGuessLoop.bind(that)
