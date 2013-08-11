@@ -114,7 +114,7 @@ Queue.prototype.resubmit = function(task, request) {
 
 Queue.prototype._wrap = function(api) {
     var methods = {};
-    ['myproblems', 'train', 'evaluate', 'guess'].forEach(function (key) {
+    ['problems', 'train', 'evaluate', 'guess'].forEach(function (key) {
         methods[key] = api[key];
         api[key] = function () {
             var args = Array.prototype.splice.call(arguments, 0, arguments.length);
@@ -165,14 +165,14 @@ function respond(method) { /* follows by top function arguments */
             return;
         }
 
-        try {
-            log('Responce: ', stringify(body));
-            body = JSON.parse(stringify(body));
-        } catch (e) {
-            log('===================ERRROR==============', e, e.stack);
-            // too many requests?
-            API.queue.resubmit(currentTask, currentRequest);
-        }
+        // try {
+        //     log('Responce: ', stringify(body));
+        //     body = JSON.parse(stringify(body));
+        // } catch (e) {
+        //     log('===================ERRROR==============', e, e.stack);
+        //     // too many requests?
+        //     API.queue.resubmit(currentTask, currentRequest);
+        // }
 
         API.queue.cooldown = DEFAULT_COOLDOWN;
 

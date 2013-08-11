@@ -12,31 +12,32 @@ var _ = require('underscore'),
 
 var problemsFile = path.join(__dirname, '../problems.json');
 
-before(function (done) {
-    fs.exists(problemsFile, function (exists) {
-        if (!exists) {
-            api.problems(function (body) {
-                problems = _.sortBy(body, function (p) {
-                    return p.size;
-                });
-                fs.writeFileSync(problemsFile, JSON.stringify(problems, null, '\t'));
-                done();
-            });
-        } else {
-            fs.readFile(problemsFile, function (err, data) {
-                if (err) throw err;
-                problems = JSON.parse(data);
-                done();
-            });
-        }
-    });
-});
-
 describe('ICFP cloudapp.net endpoint', function () {
+
+    before(function (done) {
+        fs.exists(problemsFile, function (exists) {
+            if (!exists) {
+                api.problems(function (body) {
+                    problems = _.sortBy(JSON.parse(body), function (p) {
+                        return p.size;
+                    });
+                    fs.writeFileSync(problemsFile, JSON.stringify(problems, null, '\t'));
+                    done();
+                });
+            } else {
+                fs.readFile(problemsFile, function (err, data) {
+                    if (err) throw err;
+                    problems = JSON.parse(data);
+                    done();
+                });
+            }
+        });
+    });
+
     it('should load problems', function () {
-        expect(problems.length).to.equal(1620);
+        expect(problems.length).to.equal(1820);
         expect(problems[0].size).to.equal(3);
-        expect(problems[problems.length - 1].size).to.equal(30);
+        expect(problems[problems.length - 1].size).to.equal(43);
     });
 
     it('should read train files', function () {
