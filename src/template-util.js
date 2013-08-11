@@ -58,7 +58,7 @@ function mapZ32BV (operator) {
    switch (operator) {
        case 'C0': return '0';
        case 'C1': return '1';
-       case 'VAR': return 'x';
+       case 'VAR': return 'x1';
        default: return operator.toLowerCase();
    }
 }

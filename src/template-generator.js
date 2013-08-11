@@ -69,7 +69,7 @@ function next_op2(len, crumbs) {
 
 }
 
-function next_trinary_expression(len, crumbs, operator, operator_len) {
+function next_ternary_expression(len, crumbs, operator, operator_len) {
     var e1, e2, e3, e1_len, e2_len;
 
     if (!len || len < 3 + operator_len)
@@ -101,13 +101,13 @@ function next_trinary_expression(len, crumbs, operator, operator_len) {
     e2_len += 1;
     if (e1_len + e2_len < len - operator_len) {
         e2 = next_expression(e2_len);
-        return next_trinary_expression(len, [operator, e1, e2, null], operator, operator_len);
+        return next_ternary_expression(len, [operator, e1, e2, null], operator, operator_len);
     }
 
     // we ran out of e2's for e1. Let's get next e1
     e1 = next_expression(e1_len, crumbs && crumbs[1]);
     if (e1) {
-        return next_trinary_expression(len, [operator, e1, null, null], operator, operator_len);
+        return next_ternary_expression(len, [operator, e1, null, null], operator, operator_len);
     }
 
     // start over e1 with the new len
@@ -116,19 +116,25 @@ function next_trinary_expression(len, crumbs, operator, operator_len) {
         return null;
 
     e1 = next_expression(e1_len);
-    return next_trinary_expression(len, [operator, e1, null, null], operator, operator_len);
+    return next_ternary_expression(len, [operator, e1, null, null], operator, operator_len);
 }
 
 
 function next_if0(len, crumbs) {
-    return next_trinary_expression(len, crumbs, 'if0', 1);
+    return next_ternary_expression(len, crumbs, 'if0', 1);
 }
 
 function next_fold(len, crumbs) {
     if (!len || len < 6)
         return null;
     
-    return next_trinary_expression(len, crumbs, 'fold', 2);
+    var fold_arguments = crumbs && ['fold', crumbs[1], crumbs[2], crumbs[3] && crumbs[3][2]];
+
+    var next_arguments = next_ternary_expression(len, fold_arguments, 'fold', 2);
+
+    return next_arguments &&
+        ['fold', next_arguments[1], next_arguments[2], ['lambda', ['x2', 'x3'], next_arguments[3]]];
+
 }
 
 function next_tfold(len, current) {
@@ -137,12 +143,12 @@ function next_tfold(len, current) {
     if (!len || len < 6)
         return null;
 
-    expression = next_expression(len - 4, current && current[2]);
+    expression = next_expression(len - 4, current && current[3] && current[3][2]);
 
     if (!expression)
         return null;
 
-    return ['lambda', 'x', '0', expression];
+    return ['fold', 'x1', '0', ['lambda', ['x2', 'x3'], expression]];
 }
 
 var TEMPLATE_EXPRESSIONS = {
@@ -279,21 +285,21 @@ function next_program(len, current, operators) {
     }
     
     do {
-        expression = next_expression(len - 1, expression && expression, options);
+        expression = next_expression(len - 1, expression, options);
         
         var isGotOp1 = false;
         var isGotOp2 = false;
         var isGotIf = false;
         var isGotFold = false;
         post_check(expression);
-    } while(expression && ((isIf && !isGotIf) /*|| (isFold && !isGotFold)*/ || (isOp1 && !isGotOp1) || (isOp2 && !isGotOp2)
-                           || (!isOp1 && isGotOp1) || (!isOp2 && isGotOp2) || (!isIf && isGotIf)));
+    } while(expression && ((isIf && !isGotIf) || (isFold && !isGotFold) || (isOp1 && !isGotOp1) || (isOp2 && !isGotOp2)
+                           || (!isOp1 && isGotOp1) || (!isOp2 && isGotOp2) || (!isIf && isGotIf) || (!isFold && isGotFold)));
     
     
     if (!expression)
         return null;
 
-    return ['lambda', '(x)', expression];
+    return ['lambda', ['x1'], expression];
 }
 
 
