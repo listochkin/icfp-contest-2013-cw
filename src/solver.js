@@ -182,13 +182,13 @@ Solver.prototype.start = function(task, callback) {
 }
 
 Solver.prototype.shouldTerminate = function () {
-    var should = !this.task || api.queue.completedTasks.id];
+    var should = !this.task || api.queue.completed[this.tasks.id];
     if (should) this.terminate();
     return should;
 }
 
 Solver.prototype.terminate = function () {
-    api.queue.terminate);
+    api.queue.terminate(this.task);
     this.task = null; // gracefull shotdown;
 };
 
