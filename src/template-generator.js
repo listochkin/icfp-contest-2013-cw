@@ -130,6 +130,9 @@ function next_ternary_expression(len, crumbs, operator, operator_len) {
 
 
 function next_if0(len, crumbs) {
+//    if (!len || len < 5 )
+//        return null;
+
     return next_ternary_expression(len, crumbs, 'if0', 1);
 }
 
@@ -169,7 +172,7 @@ var TEMPLATE_EXPRESSIONS = {
     tfold: next_tfold
 };
 
-var expressions = ['fold', 'op2', 'op1', 'c', 'if0'];
+var expressions = ['fold', 'if0', 'op2', 'op1', 'c'];
 
 function next_expression(len, current, options) {
     var expression;
@@ -293,6 +296,7 @@ function next_program(len, current, operators) {
                             break
                         case 'if0':
                             isGotIf = true;
+                            ifCount += 1;
                             break
                         case 'fold':
                             isGotFold = true;
@@ -310,9 +314,12 @@ function next_program(len, current, operators) {
         var isGotOp2 = false;
         var isGotIf = false;
         var isGotFold = false;
+        var ifCount = 0
+
         post_check(expression);
-    } while(expression && ((isIf && !isGotIf) || (isFold && !isGotFold) || (isOp1 && !isGotOp1) || (isOp2 && !isGotOp2)
-                           || (!isOp1 && isGotOp1) || (!isOp2 && isGotOp2) || (!isIf && isGotIf) || (!isFold && isGotFold)));
+    } while(expression && ((isIf && !isGotIf) || (isFold && !isGotFold) || (isOp1 && !isGotOp1) ||
+                           (isOp2 && !isGotOp2) || (!isOp1 && isGotOp1) || (!isOp2 && isGotOp2) ||
+                           (!isIf && isGotIf) || (!isFold && isGotFold) || (ifCount > 2)));
     
     
     if (!expression)

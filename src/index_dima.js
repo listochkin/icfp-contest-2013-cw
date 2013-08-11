@@ -9,10 +9,23 @@ global.problems_solved = 0;
 
 var start, end;
 
+//var problem = { id: 'btbiFzxtsJlK6ZTpSkM3y9Sc',
+//    size: 10,
+//    operators: [ 'and', 'if0', 'or', 'shr16' ],
+//    challenge: '(lambda (x_9390) (if0 (and (or (shr16 x_9390) x_9390) 1) 1 x_9390))' };
+//
+//start = new Date().getTime();
+//var solver = new Solver(problem);
+//solver.start(function () {
+//    end = new Date().getTime();
+//    console.log('====== SOLVED #' + global.problems_solved + " Time: " + (end - start));
+//});
+
+
 function solve_problem_train() {
     console.log('solve_problem train ');
     
-    api.train(15, [], function (problem) {
+    api.train(10, [], function (problem) {
 //    problem = { id: 'anwX0ykmLU2zmplwr9v8padw',
 //  size: 7,
 //  operators: [ 'plus', 'shl1', 'shr16', 'shr4' ],

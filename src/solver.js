@@ -58,8 +58,7 @@ Solver.prototype.guess = function (callback) {
 
         if (response.status === 'mismatch') {
             // add response.values to pending constraints
-            //this.pendingConstraints = [];
-            //this.addConstraint([response.values[0], response.values[1]]);
+            this.addConstraint([response.values[0], response.values[1]]);
             this.z3program += translator.translate_constraint16([[response.values[0], response.values[1]]]);
             this.z3program += translator.check_sat();
         }
