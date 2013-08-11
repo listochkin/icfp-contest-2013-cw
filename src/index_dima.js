@@ -8,13 +8,15 @@ var templateUtil = require('../src/template-util.js');
 global.problems_solved = 0;
 
 function solve_problem_train() {
-    api.train(20, [], function (problem) {
+    console.log('solve_problem train ');
+    
+    api.train(15, [], function (problem) {
 //    problem = { id: 'anwX0ykmLU2zmplwr9v8padw',
 //  size: 7,
 //  operators: [ 'plus', 'shl1', 'shr16', 'shr4' ],
 //  challenge: '(lambda (x_6542) (plus (shl1 x_6542) (shr4 (shr16 x_6542))))' };
   
-        console.log('solve_problem train ');
+        console.log('solve_problem train returned');
         console.log(problem);        
       
         console.log('Solving... solved so far:' +(global.problems_solved++)); 
