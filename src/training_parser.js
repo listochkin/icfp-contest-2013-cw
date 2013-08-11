@@ -132,7 +132,7 @@ function get_next_template(size){
         store_templates.size = size;
         store_templates.templates = [];
         for(var i = 0; i < templates.length; i++){
-            store_templates.templates[i]=templates[i].template_arr;
+            store_templates.templates[i]=templates[i].lisp_arr;
             //console.log(templates[i].template_arr);
         }
     }
