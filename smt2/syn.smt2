@@ -263,12 +263,12 @@
 (declare-const v_02 Op0Type)   
 
 (define-fun lambda_task ((x Val)) Val 
-    (z_fold_3 (synth_op0 v_01 x) (synth_op0 v_02 x) x)
+    (z_fold_3 x (synth_op0 v_01 x) (synth_op0 v_02 x))
 )
 
 (assert (= (lambda_task #x0000000000000000) #x0000000000000080))
 ;(assert (= (lambda_task #x0000000000000001) #x0000000000000180))
-(assert (= (lambda_task #x0000000000000002) #0000000000000280))
+(assert (= (lambda_task #x0000000000000002) #x0000000000000280))
 ;(assert (= (lambda_task #x0000000FFFFFFF10) #x00000FFFFFFF1080))
 ;(assert (= (lambda_task #x000FFFFFFFFFFF10) #x0FFFFFFFFFFF1080))
 
