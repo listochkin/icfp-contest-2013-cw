@@ -46,7 +46,7 @@ Solver.prototype.evaluate = function (inputs, callback) {
 
 Solver.prototype.guess = function (callback) {
 
-    if (!this.z3sat) {
+    if (!this.z3sat || !this.task) {
         callback(null);
         return;
     }
@@ -120,6 +120,7 @@ Solver.prototype.solveGuessLoop = function(cb1) {
 
     async.whilst(
         function() {
+            if (!that.task) return false;
             var ret = (that.templateStatus === 'mismatch') && that.z3sat;
 //            console.log('Loop tested ' + ret + that.templateStatus);
             return ret;
@@ -178,6 +179,11 @@ Solver.prototype.start = function(task, callback) {
     });
 
 }
+
+Solver.prototype.terminate = function() {
+    api.queue.terminate(this.task);
+    this.task = null; // gracefull shotdown;
+};
 
 Solver.prototype.stop = function() {
     this.z3.kill();

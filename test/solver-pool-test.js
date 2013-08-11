@@ -40,6 +40,7 @@ describe('Pool of Solvers', function () {
     describe.skip('network tets', function () {
 
         it('solver from pool should solve problems in parallel', function (done) {
+            this.timeout(4 * 60 * 1000);
 
             function getProblem(complexity) {
                 return function (cb) {

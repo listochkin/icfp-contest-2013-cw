@@ -21,6 +21,8 @@ var DEFAULT_COOLDOWN = 2 * 1000,
     REQUEST_PENDING = false;
 
 function Queue(api) {
+    this.completedTasks = {};
+
     this.pendingTasks = {};
     this.other = [];
     this.methods = this._wrap(api);
@@ -80,6 +82,7 @@ Queue.prototype.drain = function() {
 Queue.prototype.submit = function(method, args) {
     if (method === 'evaluate' || method === 'guess') {
         var taskId = args[0];
+        if (this.completedTasks[taskId]) return; // ignore submissions for completed tsks
         if (!this.pendingTasks[taskId]) {
             this.pendingTasks[taskId] = {
                 id: taskId,
@@ -95,7 +98,7 @@ Queue.prototype.submit = function(method, args) {
 
 Queue.prototype.resubmit = function(task, request) {
     log('Resubmit: ', task, request);
-    if (task != null) {
+    if (task != null && this.pendingTasks[task.id] != null) {
         this.pendingTasks[task.id].requests.unshift(request);
     } else {
         this.other.unshift(request)
@@ -122,7 +125,21 @@ Queue.prototype._wrap = function(api) {
     return methods; 
 };
 
-function respond (method) { /* follows by top function arguments */
+Queue.prototype.terminate = function(task) {
+    var pending = _(this.pendingTasks).find(function (t) {
+        return t.id == task.id;
+    });
+
+    if (pending) {
+        pending.task = task;
+        pending.terminated = new Date();
+
+        this.completedTasks[pending.id] = pending;
+        delete this.pendingTasks[pending.id];
+    }
+};
+
+function respond(method) { /* follows by top function arguments */
     var args = Array.prototype.splice.call(arguments, 0, arguments.length),
         currentTask = API.queue.nextTask,
         currentRequest = API.queue.nextRequest;
