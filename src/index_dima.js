@@ -7,6 +7,8 @@ var templateUtil = require('../src/template-util.js');
 
 global.problems_solved = 0;
 
+var start, end;
+
 function solve_problem_train() {
     console.log('solve_problem train ');
     
@@ -19,27 +21,31 @@ function solve_problem_train() {
         console.log('solve_problem train returned');
         console.log(problem);        
       
-        console.log('Solving... solved so far:' +(global.problems_solved++)); 
+    //    console.log('Solving... solved so far:' +(global.problems_solved++));
     //          console.log(problems[p]); 
     
         //solve_problem(p - 1);
-    
-//        var solver = new Solver(problem);
-//        solver.start(function () {
-//            console.log('START.CALLBACK ');
-//            solve_problem_train();
-//        });
+
+        start = new Date().getTime();
+        var solver = new Solver(problem);
+        solver.start(function () {
+            end = new Date().getTime();
+            console.log('====== SOLVED #' + global.problems_solved + " Time: " + (end - start));
+            solve_problem_train();
+        });
     });
 }
-//solve_problem_train();
+solve_problem_train();
 
-var expr_str = require('../src/expr_str.js');
-var prog;
-prog = generator.next_program(14, prog, ['fold', 'not', 'or'] );
-while (prog) {
-    console.log(expr_str(prog));
-    prog = generator.next_program(14, prog, ['fold', 'not', 'or'] );
-}
+//////////////////////////////////////////////////////////////////
+
+//var expr_str = require('../src/expr_str.js');
+//var prog;
+//prog = generator.next_program(14, prog, ['tfold', 'not', 'or'] );
+//while (prog) {
+//    console.log(expr_str(prog));
+//    prog = generator.next_program(14, prog, ['tfold', 'not', 'or'] );
+//}
 
 /////////////////////////////////////////////////
 

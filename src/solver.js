@@ -69,17 +69,17 @@ Solver.prototype.guess = function (callback) {
 
 
 Solver.prototype.callZ3 = function(callback) {
-    console.log(this.z3program);
+    //console.log(this.z3program);
     this.z3.write(this.z3program, function (response) {
         console.log(response);
         if(response.indexOf('sat') == 0) {
             this.z3.write('(get-model)', function (response) {
-                console.log(response);
+                //console.log(response);
                 this.programHoles = templateUtil.extractVariables(response);
-                console.log(this.programHoles);
+                //console.log(this.programHoles);
 
                 this.program = templateUtil.toProgram(this.template, this.programHoles, this.task.operators)
-                console.log(expr_str(this.program));
+                console.log('Satisfied. Suggested program: ' + expr_str(this.program));
                 this.z3program = '';
                 callback(null);
             }.bind(this));
@@ -128,10 +128,8 @@ Solver.prototype.solveGuessLoop = function(cb1) {
         },
 
         function(cb2) {
-            console.log('About to call series');
             async.series([
                 function(cb3) {
-                    console.log('About to call Z3');
                     that.callZ3(cb3);
                 },
 
