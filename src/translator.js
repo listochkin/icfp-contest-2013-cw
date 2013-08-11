@@ -365,10 +365,10 @@ function translate_template(template, operators) {
     
     smt2+=ops+'\n';
     
-    if(isFold)
+    if(isFold && foldExpr)
         smt2 += '(define-fun synth_op0_fold ((x Op0TypeFold)(v Val)(v2 Val)(v3 Val)) Val\n';    
     
-    if(isFold)
+    if(isFold && foldExpr)
         smt2 += '(if (= x V1)\n\
 	v\n\
 	(if (= x V2)\n\
