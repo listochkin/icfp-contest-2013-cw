@@ -31,8 +31,17 @@ function solve_problem_train() {
 //        });
     });
 }
-solve_problem_train();
+//solve_problem_train();
 
+var expr_str = require('../src/expr_str.js');
+var prog;
+prog = generator.next_program(14, prog, ['fold', 'not', 'or'] );
+while (prog) {
+    console.log(expr_str(prog));
+    prog = generator.next_program(14, prog, ['fold', 'not', 'or'] );
+}
+
+/////////////////////////////////////////////////
 
 function solve_problem(p) {
     console.log('solve_problem ' + p);

@@ -157,7 +157,7 @@ function next_tfold(len, current) {
     if (!expression)
         return null;
 
-    return ['fold', 'x1', '0', ['lambda', ['x2', 'x3'], expression]];
+    return ['fold', 'x1', '0', ['lambda', ['x1', 'x2'], expression]];
 }
 
 var TEMPLATE_EXPRESSIONS = {
