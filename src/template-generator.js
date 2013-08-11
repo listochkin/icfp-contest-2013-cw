@@ -166,7 +166,7 @@ var TEMPLATE_EXPRESSIONS = {
     op2: next_op2,
     if0: next_if0,
     fold: next_fold,
-    tfold: null //next_tfold
+    tfold: next_tfold
 };
 
 var expressions = ['fold', 'op2', 'op1', 'c', 'if0'];
@@ -175,6 +175,7 @@ function next_expression(len, current, options) {
     var expression;
     var index;
     var fold_allowed = options && options.fold_allowed;
+    var use_tfold = options && options.use_tfold;
 
     index = expressions.indexOf(current && current[0]);
    
@@ -194,9 +195,12 @@ function next_expression(len, current, options) {
             return null;
         
         
+        var expressionName = expressions[index];
+        if (expressionName === 'fold' && use_tfold)
+            expressionName = 'tfold';
 
         // build expression tree for the next expression type
-        expression = TEMPLATE_EXPRESSIONS[expressions[index]](len, current);
+        expression = TEMPLATE_EXPRESSIONS[expressionName](len, current);
         
         
         //console.log(expression);
@@ -229,6 +233,8 @@ function next_program(len, current, operators) {
     var isOp2 = false;
     var isIf = false;
     var isFold = false;
+
+    var useTFoldInsteadOfFold = false;
     
     for (var i = 0; i < operators.length; i++) {
         switch(operators[i])
@@ -252,13 +258,17 @@ function next_program(len, current, operators) {
             case 'fold':
                 isFold = true;
                 break
+            case 'tfold':
+                isFold = true;
+                useTFoldInsteadOfFold = true;
+                break;
         }
     }
     
     var expression = current && current[2];
     var options = {
-        fold_allowed : isFold
-        //fold_allowed : false
+        fold_allowed: isFold,
+        use_tfold: useTFoldInsteadOfFold
     };
 
     if (!len || len < 2)
