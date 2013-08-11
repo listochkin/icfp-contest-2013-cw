@@ -20,7 +20,10 @@ function toProgram(template, variables, operators) {
         }
         if (template === 'op1' ||
             template === 'op2' ||
-            template === 'c' ) {
+            template === 'c'
+            ) {
+            
+            
 
             var v = variables[index];
             
@@ -57,8 +60,13 @@ function toProgram(template, variables, operators) {
 function mapZ32BV (operator) {
    switch (operator) {
        case 'C0': return '0';
+       case 'C0F': return '0';
        case 'C1': return '1';
+       case 'C1F': return '1';
        case 'VAR': return 'x1';
+       case 'V1': return 'x1';
+       case 'V2': return 'x2';
+       case 'V3': return 'x3';
        default: return operator.toLowerCase();
    }
 }

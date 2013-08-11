@@ -1,6 +1,6 @@
 'use strict';
 
-var api = require('../src/api.js');
+//var api = require('../src/api.js');
 var expr_str = require('../src/expr_str');
 var generator = require('../src/template-generator.js');
 var translator = require('../src/translator.js');
@@ -17,13 +17,42 @@ var buggy =
 
 // '(lambda (x1) (op2 (op1 x) (op1 (op1 x))))'
 
+var operators = ['plus', 'fold'];//[ 'xor', 'plus', 'and', 'or', 'not', 'shl1', 'shr1', 'shr16', 'shr4', 'tfold' ];
 var expr;
-for (var i = 0; i < 100; i++) {
-    expr = generator.next_program(7, expr/*, [ 'plus', 'shl1', 'shr16', 'shr4' ]*/);
-    console.log(expr_str(expr));
-    if (!expr)
-        break;
+
+for (var i = 0; i < 1; i++) {
+    expr = generator.next_program(12, expr, operators);
+    //console.log(expr_str(expr));
+    //if (!expr)
+      //  break;
 }
+
+console.log(expr_str(expr));
+
+
+var problem = translator.translate_template(expr, operators);
+problem += translator.translate_constraint(0, 1);
+
+console.log(problem);
+
+var z3 = new Z3();
+
+z3.write(problem, function (response) {
+    console.log(response);
+    if(response.indexOf('sat') != -1)
+        z3.write('(get-model)', function (response) {
+            console.log(response);
+            
+            var variables = templateUtil.extractVariables(response);
+            console.log(variables);
+            
+            console.log(expr_str(templateUtil.toProgram(expr, variables, operators)));
+            //expect(response.substr(0, 6)).to.equal('(model')
+            
+            //done();
+        }); 
+    z3.kill();
+});
 
 /*
 function Solver(task) {

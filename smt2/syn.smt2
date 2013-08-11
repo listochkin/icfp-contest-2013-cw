@@ -107,31 +107,9 @@
 ;     (z_or (z_shl1 x) y)
 ; )
 
-(declare-const of_01 Op2Type)
-(declare-const of_02 Op1Type)
-(declare-const vf_01 Op0TypeFold)
-(declare-const vf_02 Op0TypeFold)   
-
-(define-fun z_fold_op ((xAbove Val)(x Val)(y Val)) Val
-     (synth_op2_fold of_01 (synth_op1_fold of_02 (synth_op0_fold vf_02 xAbove x y)) (synth_op0_fold vf_01 xAbove x y))
-)
 
 
-(define-fun z_fold_3
-   ((xAbove Val) (x Val) (y Val) 
-; cant' declare functional type
-; redefeine z_fold_op function to call lambda
-;    (z_fold_op FoldVal)
-    ) Val
-   (z_fold_op xAbove (z_fold_i x (_ bv56 64))
-   (z_fold_op xAbove (z_fold_i x (_ bv48 64))
-   (z_fold_op xAbove (z_fold_i x (_ bv40 64))
-   (z_fold_op xAbove (z_fold_i x (_ bv32 64))
-   (z_fold_op xAbove (z_fold_i x (_ bv24 64))
-   (z_fold_op xAbove (z_fold_i x (_ bv16 64))
-   (z_fold_op xAbove (z_fold_i x (_ bv8 64))
-   (z_fold_op xAbove (z_fold_i x (_ bv0 64)) y))))))))
-)
+
 
 ; synth functions
 
@@ -258,6 +236,33 @@
 ;(simplify (lambda_orig #x000FFFFFFFFFFF10))
 ;(simplify #x0FFFFFFFFFFF1080)
 ;;;;;;;;;;;;;;;;; solution
+
+(declare-const of_01 Op2Type)
+(declare-const of_02 Op1Type)
+(declare-const vf_01 Op0TypeFold)
+(declare-const vf_02 Op0TypeFold)   
+
+(define-fun z_fold_op ((xAbove Val)(x Val)(y Val)) Val
+     (synth_op2_fold of_01 (synth_op1_fold of_02 (synth_op0_fold vf_02 xAbove x y)) (synth_op0_fold vf_01 xAbove x y))
+)
+
+; (lambda (x_1163) (fold x_1163 0 (lambda (x_1163 x_1164) (xor x_1163 0))))
+
+(define-fun z_fold_3
+   ((xAbove Val) (x Val) (y Val) 
+; cant' declare functional type
+; redefeine z_fold_op function to call lambda
+;    (z_fold_op FoldVal)
+    ) Val
+   (z_fold_op xAbove (z_fold_i x (_ bv56 64))
+   (z_fold_op xAbove (z_fold_i x (_ bv48 64))
+   (z_fold_op xAbove (z_fold_i x (_ bv40 64))
+   (z_fold_op xAbove (z_fold_i x (_ bv32 64))
+   (z_fold_op xAbove (z_fold_i x (_ bv24 64))
+   (z_fold_op xAbove (z_fold_i x (_ bv16 64))
+   (z_fold_op xAbove (z_fold_i x (_ bv8 64))
+   (z_fold_op xAbove (z_fold_i x (_ bv0 64)) y))))))))
+)
 
 (declare-const v_01 Op0Type)
 (declare-const v_02 Op0Type)   

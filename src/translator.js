@@ -232,8 +232,8 @@ function translate_template(template, operators) {
                 isFold = true;
                 break;
             case 'tfold':
-                ops+='';
-                isFold = true;
+                ops+='';                
+                isTfold = true;
                 break;
         }
     });
@@ -249,6 +249,8 @@ function translate_template(template, operators) {
     }
     if(isFold)
         bootstrap += '(declare-datatypes () ((Op0TypeFold C0F C1F V1 V2 V3)))\n';
+    if(isTfold)
+        bootstrap += '(declare-datatypes () ((Op0TypeFold C0F C1F V1 V2)))\n';
 
     bootstrap += '\n' + ops + '\n\
 ; synth functions\n\
@@ -260,20 +262,7 @@ function translate_template(template, operators) {
 		(_ bv0 64)\n\
 		(_ bv1 64))))\n\
 \n';
-    
-    if(isFold)
-        bootstrap += '(define-fun synth_op0_fold ((x Op0TypeFold)(v Val)(v2 Val)(v3 Val)) Val\n\
-    (if (= x V1)\n\
-	v\n\
-	(if (= x V2)\n\
-	    v2\n\
-	    (if (= x V3)\n\
-		v3\n\
-		(if (= x C0F)\n\
-		    (_ bv0 64)\n\
-		    (_ bv1 64))))))\n\
-\n';
-        
+            
     if (isOp1)
         bootstrap += '\n\
 (define-fun synth_op1 ((h Op1Type)(v Val)) Val\n ' + op1syn + op1any + op1sync +')\n\n';
@@ -286,19 +275,24 @@ function translate_template(template, operators) {
     
     var ops = '';
     var cur_op = 0;    
-    var lambda = '(define-fun lambda ((x Val)) Val \n    '; 
+    var lambda = '(define-fun lambda ((x1 Val)) Val \n    ';
+    var fold_lambda = '';
     
     var expr = deepCopy(template.slice(2)[0]);
+    var foldExpr = null;
+    var foldOps = '';
+    
     expr_tokenize(expr);
+    
+    if(foldExpr)
+        expr_tokenize_fold(foldExpr);
     
     function expr_tokenize(s_expr) {
         if(s_expr instanceof Array) {
                 
                 for (var i = 0; i < s_expr.length; i++) {
                     
-                    if(s_expr[i] instanceof Array) 
-                        expr_tokenize(s_expr[i]);
-                    else
+                    if(!(s_expr[i] instanceof Array)) 
                         switch(s_expr[i]) {
                             case 'op1':
                                 s_expr[i] = 'synth_op1 h'+cur_op;
@@ -311,7 +305,7 @@ function translate_template(template, operators) {
                                 cur_op++;
                                 break;
                             case 'c':
-                                s_expr[i] = '(synth_op0 h'+cur_op+' x)';
+                                s_expr[i] = '(synth_op0 h'+cur_op+' x1)';
                                 ops+='(declare-const h'+cur_op+' Op0Type)\n';
                                 cur_op++;
                                 break;
@@ -319,18 +313,104 @@ function translate_template(template, operators) {
                                 s_expr[i] = 'z_if0';                                
                                 break;
                             case 'fold':
-                                s_expr[i] = 'z_fold';
+                                s_expr[i] = 'z_fold x1';
+                                foldExpr = s_expr.splice(-1, 1)[0][2];
+                                if(isTfold)
+                                    s_expr.splice(1, 2, 'x1', '(_ bv0 64)');
+                                //[3] = undefined;
+                                console.log('!!!!!!!dfg ' + s_expr);
                                 break;
+                            /*case 'x1':
+                                s_expr[i] = 'x';
+                                break;*/
                         }
+                    else if(s_expr[i] instanceof Array) 
+                        expr_tokenize(s_expr[i]);
+                }
+            }
+    }
+    
+    function expr_tokenize_fold(s_expr) {
+        if(s_expr instanceof Array) {
+                
+                for (var i = 0; i < s_expr.length; i++) {
+                    
+                    if(!(s_expr[i] instanceof Array)) 
+                        switch(s_expr[i]) {
+                            case 'op1':
+                                s_expr[i] = 'synth_op1 h'+cur_op;
+                                ops+='(declare-const h'+cur_op+' Op1Type)\n';
+                                cur_op++;
+                                break;
+                            case 'op2':
+                                s_expr[i] = 'synth_op2 h'+cur_op;
+                                ops+='(declare-const h'+cur_op+' Op2Type)\n';
+                                cur_op++;
+                                break;
+                            case 'c':
+                                s_expr[i] = '(synth_op0_fold h'+cur_op+' xAbove x '+(isTfold ? '' : 'y')+')';
+                                ops+='(declare-const h'+cur_op+' Op0TypeFold)\n';
+                                cur_op++;
+                                break;
+                            case 'if0':
+                                s_expr[i] = 'z_if0';                                
+                                break;                            
+                        }                    
+                    else if(s_expr[i] instanceof Array) 
+                        expr_tokenize_fold(s_expr[i]);
                 }
             }
     }
     
     //console.log(expr);
     
-    lambda += expr_str(expr) + ')\n';
+    lambda += expr_str(expr) + ')\n\n';
     
     smt2+=ops+'\n';
+    
+    if(isFold)
+        smt2 += '(define-fun synth_op0_fold ((x Op0TypeFold)(v Val)(v2 Val)(v3 Val)) Val\n';
+    if(isTfold)
+        smt2 += '(define-fun synth_op0_fold ((x Op0TypeFold)(v Val)(v2 Val)) Val\n';
+    
+    if(isTfold)
+        smt2 += '(if (= x V1)\n\
+	v\n\
+	(if (= x V2)\n\
+	    v2\n\
+            (if (= x C0F)\n\
+		(_ bv0 64)\n\
+		(_ bv1 64)))))\n';
+    if(isFold)
+        smt2 += '(if (= x V1)\n\
+	v\n\
+	(if (= x V2)\n\
+	    v2\n\
+	    (if (= x V3)\n\
+		v3\n\
+		(if (= x C0F)\n\
+		    (_ bv0 64)\n\
+		    (_ bv1 64))))))\n';
+smt2 += '\n\
+(define-fun z_fold_i ((x Val) (i Val)) Val\n\
+  (bvand (bvlshr x i) (_ bv255 64))\n\
+)\n\
+(define-fun z_fold_op ((xAbove Val)(x Val)(y Val)) Val '+ expr_str(foldExpr) +')\n\
+        (define-fun z_fold\n\
+   ((xAbove Val) (x Val) (y Val) \n\
+; cant declare functional type\n\
+; redefeine z_fold_op function to call lambda\n\
+;    (z_fold_op FoldVal)\n\
+    ) Val\n\
+   (z_fold_op xAbove (z_fold_i x (_ bv56 64))\n\
+   (z_fold_op xAbove (z_fold_i x (_ bv48 64))\n\
+   (z_fold_op xAbove (z_fold_i x (_ bv40 64))\n\
+   (z_fold_op xAbove (z_fold_i x (_ bv32 64))\n\
+   (z_fold_op xAbove (z_fold_i x (_ bv24 64))\n\
+   (z_fold_op xAbove (z_fold_i x (_ bv16 64))\n\
+   (z_fold_op xAbove (z_fold_i x (_ bv8 64))\n\
+   (z_fold_op xAbove (z_fold_i x (_ bv0 64)) y))))))))\n\
+)\n\n';
     smt2+=lambda;
     return smt2;
 }
