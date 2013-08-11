@@ -65,7 +65,7 @@ function next_op2(len, crumbs) {
     //console.log('op2 here2 ' + e1_len + ' ' + crumbs && crumbs[1] );
         
     
-    e1 = next_expression(e1_len, crumbs && crumbs[0]);
+    e1 = next_expression(e1_len);
     if (!e1)
         return null;    
     

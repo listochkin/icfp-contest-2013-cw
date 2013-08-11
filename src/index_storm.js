@@ -19,7 +19,7 @@ var buggy =
 
 var expr;
 for (var i = 0; i < 100; i++) {
-    expr = generator.next_program(8, expr/*, [ 'plus', 'shl1', 'shr16', 'shr4' ]*/);
+    expr = generator.next_program(7, expr/*, [ 'plus', 'shl1', 'shr16', 'shr4' ]*/);
     console.log(expr_str(expr));
     if (!expr)
         break;

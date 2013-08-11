@@ -8,12 +8,11 @@ var templateUtil = require('../src/template-util.js');
 global.problems_solved = 0;
 
 function solve_problem_train() {
-    api.train(7, [], function (problem) {
-        /*problem = { id: 'anwX0ykmLU2zmplwr9v8padw',
-  size: 7,
-  operators: [ 'plus', 'shl1', 'shr16', 'shr4' ],
-  challenge: '(lambda (x_6542) (plus (shl1 x_6542) (shr4 (shr16 x_6542))))' };
-  */
+    api.train(20, [], function (problem) {
+//    problem = { id: 'anwX0ykmLU2zmplwr9v8padw',
+//  size: 7,
+//  operators: [ 'plus', 'shl1', 'shr16', 'shr4' ],
+//  challenge: '(lambda (x_6542) (plus (shl1 x_6542) (shr4 (shr16 x_6542))))' };
   
         console.log('solve_problem train ');
         console.log(problem);        
@@ -25,12 +24,13 @@ function solve_problem_train() {
     
         var solver = new Solver(problem); 
         solver.start(function () {
-            //console.log('START.CALLBACK '); 
+            console.log('START.CALLBACK '); 
             solve_problem_train();
         });
     });
 }
 solve_problem_train();
+
 
 function solve_problem(p) {
     console.log('solve_problem ' + p);
@@ -63,12 +63,13 @@ function solve_problem(p) {
     });
 
 } 
-  
+
+/* 
 var problems = null; 
 var _ = require('underscore'), fs = require('fs'), path = require('path'); 
 var problemsFile = path.join(__dirname, '../problems.json');
 
-/*
+
 api.problems(function (body) { 
     problems = _.sortBy(body, function (p) { 
         return p.size; 
