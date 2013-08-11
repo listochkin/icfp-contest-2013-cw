@@ -41,21 +41,26 @@ Queue.prototype.schedule = function(cooldown) {
     this.timer = setTimeout(function() {
         this.drain();
         this.schedule(this.cooldown);
-    }.bind(this), cooldown || 50);//.unref();
+    }.bind(this), cooldown || 50);
+};
+
+Queue.prototype.stop = function() {
+    clearTimeout(this.timer);
 };
 
 Queue.prototype.callNetwork = function() {
-    this.callingNetwork = true;
     var request = this.nextRequest;
+    if (request[5] && this.completedTasks[request[5]]) {
+        return;
+    }
+    this.callingNetwork = true;
     this.methods[request[0]].apply(API, request[1]);
-    this.nextTask = null;
-    this.nextRequest = null;
 };
 
 Queue.prototype.drain = function() {
     if (this.callingNetwork) return;
     // old priority queries first
-    log('Tasks in queue', this.pendingTasks);
+    log('Cooldown: ', this.cooldown,' Tasks in queue', stringify(this.pendingTasks, null, '\t'));
     var task = _.chain(this.pendingTasks).filter(function (task) {
         return task.requests.length > 0 && task.requests[0][4] !== REQUEST_IN_FLY;
     }).min(function (task) {
@@ -82,7 +87,6 @@ Queue.prototype.drain = function() {
 };
 
 Queue.prototype.submit = function(method, args) {
-    if (!this.timer) this.schedule(this.cooldown || 100);
     if (method === 'evaluate' || method === 'guess') {
         var taskId = args[0];
         if (this.completedTasks[taskId]) return; // ignore submissions for completed tsks
@@ -93,18 +97,21 @@ Queue.prototype.submit = function(method, args) {
                 requests: []
             };
         }
-        this.pendingTasks[taskId].requests.push([method, args, _.uniqueId('r'), 0, REQUEST_PENDING]);
+        this.pendingTasks[taskId].requests.push([method, args, _.uniqueId('r'), 0, REQUEST_PENDING, taskId]);
     } else {
-        this.other.push([method, args, _.uniqueId('r'), 0]);
+        this.other.push([method, args, _.uniqueId('r'), 0, null]);
     }
 };
 
 Queue.prototype.resubmit = function(task, request) {
-    if (!this.timer) this.schedule(this.cooldown || 100);
+    if (!task && request[5]) task = _(this.pendingTasks).find(function (t) {
+        return t.id === request[5];
+    });
     log('Resubmit: ', task, request);
-    if (task != null && this.pendingTasks[task.id] != null) {
+    if (task && task.terminated) return;
+    if (task && !this.completedTasks[task.id]) {
         this.pendingTasks[task.id].requests.unshift(request);
-    } else {
+    } else if (!request[5]){
         this.other.unshift(request)
     }
     request[3] += 1;
@@ -114,7 +121,7 @@ Queue.prototype.resubmit = function(task, request) {
 
 Queue.prototype._wrap = function(api) {
     var methods = {};
-    ['problems', 'train', 'evaluate', 'guess'].forEach(function (key) {
+    ['myproblems', 'train', 'evaluate', 'guess'].forEach(function (key) {
         methods[key] = api[key];
         api[key] = function () {
             var args = Array.prototype.splice.call(arguments, 0, arguments.length);
@@ -128,19 +135,20 @@ Queue.prototype._wrap = function(api) {
 Queue.prototype.terminate = function(task) {
     if (!task) return;
 
-    var pending = _(this.pendingTasks).find(function (t) {
+    var toRemove = _(this.pendingTasks).find(function (t) {
         return t.id == task.id;
     });
 
-    if (pending) {
-        pending.task = task;
-        pending.terminated = new Date();
+    if (toRemove) {
+        toRemove.task = task;
+        toRemove.terminated = new Date();
 
-        this.completedTasks[pending.id] = pending;
-        this.pendingTasks[pending.id] = {};
-        this.pendingTasks = _(this.pendingTasks).filter(function (t) {
-            return !!t['id'];
-        });
+        this.completedTasks[toRemove.id] = toRemove;
+        var newPending = {};
+        Object.keys(this.pendingTasks).forEach(function (key) {
+            if (key !== toRemove.id) newPending[key] = this.pendingTasks[key]; 
+        }, this);
+        this.pendingTasks = newPending;
     }
 };
 
@@ -165,14 +173,14 @@ function respond(method) { /* follows by top function arguments */
             return;
         }
 
-        // try {
-        //     log('Responce: ', stringify(body));
-        //     body = JSON.parse(stringify(body));
-        // } catch (e) {
-        //     log('===================ERRROR==============', e, e.stack);
-        //     // too many requests?
-        //     API.queue.resubmit(currentTask, currentRequest);
-        // }
+        try {
+            log('Responce: ', stringify(body));
+            body = JSON.parse(stringify(body));
+        } catch (e) {
+            log('===================ERRROR==============', e, e.stack);
+            // too many requests?
+            API.queue.resubmit(currentTask, currentRequest);
+        }
 
         API.queue.cooldown = DEFAULT_COOLDOWN;
 
