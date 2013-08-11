@@ -182,7 +182,7 @@ Solver.prototype.start = function(task, callback) {
 }
 
 Solver.prototype.shouldTerminate = function () {
-    var should =  || api.queue.completedTasks.id];
+    var should = !this.task || api.queue.completedTasks.id];
     if (should) this.terminate();
     return should;
 }
