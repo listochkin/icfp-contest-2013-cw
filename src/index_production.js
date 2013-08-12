@@ -37,17 +37,17 @@ solve_problem_train();
 
 function solve_problem(p) {
     console.log('solve_problem ' + p);
-    if (p <= 0)
+    if (p > 2000)
         return;
     
-    while(problems[p].size > 13
-          || problems[p].operators.indexOf('fold') != -1
-          || problems[p].operators.indexOf('tfold') == -1
+    while(/*problems[p].size < 15
+          ||*/ (problems[p].operators.indexOf('fold') != -1
+          || problems[p].operators.indexOf('tfold') == -1)
           || problems[p].operators.indexOf('bonus') != -1
           || problems[p].solved
-          || (problems[p].solved === false && !problems[p].timeLeft)) {
+          || problems[p].solved == false) {
         console.log('skipping '+p);
-        p--;
+        p++;
         if (p <= 0)
             return;
     }
@@ -62,7 +62,7 @@ function solve_problem(p) {
     var solver = new Solver(problem); 
     solver.start(function () {
         //console.log('START.CALLBACK '); 
-        solve_problem(p - 1);
+        solve_problem(p + 1);
     });
 
 } 
@@ -82,7 +82,7 @@ api.problems(function (body) {
     
     console.log(problems); 
   
-    solve_problem(problems.length - 1);
+    solve_problem(0);
     
 });
 

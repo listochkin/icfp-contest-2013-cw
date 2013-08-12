@@ -26,6 +26,7 @@ function Solver(task) {
 
 Solver.prototype.addConstraint = function (constraints) {
     this.constraints.push(constraints);
+    console.log('NUM constraints: ' + this.constraints.length);
 //    this.pendingConstraints.push(constraints);
 }
 
@@ -61,6 +62,8 @@ Solver.prototype.guess = function (callback) {
             //this.addConstraint([response.values[0], response.values[1]]);
             this.z3program += translator.translate_constraint16([[response.values[0], response.values[1]]]);
             this.z3program += translator.check_sat();
+            
+            //console.log(this.z3program);
         }
         callback(null);
     }.bind(this));
@@ -68,7 +71,7 @@ Solver.prototype.guess = function (callback) {
 
 
 Solver.prototype.callZ3 = function(callback) {
-    console.log(this.z3program);
+    //console.log(this.z3program);
     this.z3.write(this.z3program, function (response) {
         console.log(response);
         if(response.indexOf('sat') == 0) {
@@ -121,12 +124,17 @@ Solver.prototype.nextTemplate = function(check_sat) {
 
 Solver.prototype.solveGuessLoop = function(cb1) {
     var that = this;
-
+    this.iter = 0;
+    
     async.whilst(
         function() {
             if (!that.task) return false;
-            var ret = (that.templateStatus === 'mismatch') && that.z3sat;
+            console.log('Iteration ' + that.iter++);
+            
+            var ret = (that.templateStatus === 'mismatch') && that.z3sat && that.iter < 3;
 //            console.log('Loop tested ' + ret + that.templateStatus);
+
+            
             return ret;
         },
 

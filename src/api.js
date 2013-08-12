@@ -100,7 +100,7 @@ Queue.prototype.submit = function(method, args) {
 };
 
 Queue.prototype.resubmit = function(task, request) {
-    if (!this.timer) this.schedule(this.cooldown || 100);
+    if (!this.timer) this.schedule(this.cooldown || 20);
     log('Resubmit: ', task, request);
     if (task != null && this.pendingTasks[task.id] != null) {
         this.pendingTasks[task.id].requests.unshift(request);
@@ -109,7 +109,7 @@ Queue.prototype.resubmit = function(task, request) {
     }
     request[3] += 1;
     request[4] = REQUEST_PENDING;
-    this.cooldown *= 2;
+    //this.cooldown *= 2;
 };
 
 Queue.prototype._wrap = function(api) {
