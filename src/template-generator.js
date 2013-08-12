@@ -367,11 +367,11 @@ function next_program_exact_size(len, current, operators) {
                 isIf = true;
                 break
             case 'fold':
-                isFold = true;
+//                isFold = true;
                 break
             case 'tfold':
-                isFold = true;
-                useTFoldInsteadOfFold = true;
+//                isFold = true;
+//                useTFoldInsteadOfFold = true;
                 break;
         }
     }
@@ -429,9 +429,10 @@ function next_program_exact_size(len, current, operators) {
         var cCount = 0;
 
         post_check(expression);
-    } while(expression && (/*(isIf && !isGotIf) ||*/ (isFold && !isGotFold) || /*(isOp1 && !isGotOp1) ||*/
+    } while(expression && (/*(isIf && !isGotIf) ||*/ /*(isFold && !isGotFold) || *//*(isOp1 && !isGotOp1) ||*/
                            /*(isOp2 && !isGotOp2) ||*/ (!isOp1 && isGotOp1) || (!isOp2 && isGotOp2) ||
-                           (!isIf && isGotIf) || (!isFold && isGotFold) || (ifCount > 2) ));
+                           (!isIf && isGotIf) || (!isFold && isGotFold) || (ifCount > 2) //||
+                           /*(isGotIf) || (isGotOp2)*/ ));
     
     
     if (!expression)

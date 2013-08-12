@@ -75,7 +75,7 @@ Solver.prototype.guess = function (callback) {
 Solver.prototype.callZ3 = function(callback) {
     //console.log(this.z3program);
     this.z3.write(this.z3program, function (response) {
-        console.log(response);
+        //console.log(response);
         if(response.indexOf('sat') == 0) {
             this.z3.write('(get-model)', function (response) {
                 //console.log(response);

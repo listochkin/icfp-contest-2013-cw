@@ -11,10 +11,10 @@ function solve_problem(p) {
     if (p > 2000)
         return;
 
-    while(problems[p].size === 12
-     || problems[p].operators.indexOf('fold') != -1
+    while(/*problems[p].size !== 15
+     ||*/ problems[p].operators.indexOf('fold') != -1
         || problems[p].operators.indexOf('tfold') != -1
-        || problems[p].operators.indexOf('bonus') != -1
+        || problems[p].operators.indexOf('bonus') === -1
         || problems[p].solved
         || (problems[p].solved === false && !problems[p].timeLeft)) {
         console.log('skipping '+p);
@@ -44,7 +44,7 @@ var _ = require('underscore'), fs = require('fs'), path = require('path');
 var problemsFile = path.join(__dirname, '../problems.json');
 
 api.problems(function (body) {
-    console.log();
+    console.log(body);
 
     problems = _.sortBy(JSON.parse(body), function (p) {
         return p.size;

@@ -27,7 +27,7 @@ var result = {};
 function solve_problem_train() {
     console.log('solve_problem train ');
     
-    api.train(15, [], function (problem) {
+    api.train(15, ['tfold'], function (problem) {
 //    problem = { id: 'anwX0ykmLU2zmplwr9v8padw',
 //  size: 7,
 //  operators: [ 'plus', 'shl1', 'shr16', 'shr4' ],
